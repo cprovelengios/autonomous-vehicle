@@ -1,7 +1,8 @@
 #!/usr/bin/python3.7
 from training_utils import *
-from sklearn.model_selection import train_test_split
+from datetime import datetime
 from tensorflow.keras.callbacks import CSVLogger
+from sklearn.model_selection import train_test_split
 
 
 def main():
@@ -57,12 +58,8 @@ def main():
     # Create model, by nvidia ???
     model = create_model()
 
-    count_model = 0
-
-    while os.path.exists(os.path.join('Models', f'model_v{str(count_model)}.h5')):
-        count_model += 1
-
-    csv_logger = CSVLogger(f'Models/log_v{count_model}.csv', append=True, separator=';')
+    timestamp = datetime.now().strftime("%d_%m_%Y-%H:%M:%S")
+    csv_logger = CSVLogger(f'Models/log_{timestamp}.csv', append=True, separator=';')
 
     # Training, for better results increase data, balance better, change augmentation method, change model
     history = model.fit(data_gen(x_train, x_test, 100, 1),
@@ -73,7 +70,7 @@ def main():
                         callbacks=[csv_logger])
 
     # Save the model
-    model.save(f'Models/model_v{count_model}.h5')
+    model.save(f'Models/model_{timestamp}.h5')
     print('Model Saved')
 
     # Plot results of training
