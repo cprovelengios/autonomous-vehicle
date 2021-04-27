@@ -1,7 +1,7 @@
 #!/usr/bin/python3.7
 import cv2
 
-# Camera Resolution: 1920 * 1080 (which is 1080p) creates an image that is 1920 pixels wide and 1080 pixels tall.
+# Camera Resolution: 1920*1080 (which is 1080p) creates an image that is 1920 pixels wide and 1080 pixels tall.
 cap = cv2.VideoCapture(0)
 cap.set(3, 1920)
 cap.set(4, 1080)
