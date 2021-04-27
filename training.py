@@ -1,4 +1,5 @@
 #!/usr/bin/python3.7
+from data_utils import *
 from training_utils import *
 from datetime import datetime
 from tensorflow.keras.callbacks import CSVLogger
@@ -14,7 +15,7 @@ def main():
     # print(data)
 
     # Visualize and balance data
-    data = balance_data(data, display=False)
+    data = visualize_balance_data(data, display=False, balance=True)
 
     # Convert data frame to list
     images_path, steerings = load_data(path, data)
@@ -63,15 +64,20 @@ def main():
 
     # Training, for better results increase data, balance better, change augmentation method, change model
     history = model.fit(data_gen(x_train, x_test, 100, 1),
-                        steps_per_epoch=100,
-                        epochs=15,
+                        steps_per_epoch=5,    # How many times in every epoch will take batch_size random images to train (100)
+                        epochs=5,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (15)
                         validation_data=data_gen(y_train, y_test, 50, 0),
                         validation_steps=50,
                         callbacks=[csv_logger])
 
     # Save the model
-    model.save(f'Models/model_{timestamp}.h5')
-    print('Model Saved')
+    save_model = False
+
+    if save_model:
+        model.save(f'Models/model_{timestamp}.h5')
+        print('Model Saved')
+    else:
+        os.remove(f'Models/log_{timestamp}.csv')
 
     # Plot results of training
     plt.plot(history.history['loss'])
@@ -91,7 +97,6 @@ if __name__ == '__main__':
 # np.random.shuffle(keys)
 # x_train = x_train[keys]
 # y_train = y_train[keys]
-
 
 # BATCHE SIZE TEST #####################################################################################
 # batch_size = 100
