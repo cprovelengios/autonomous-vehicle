@@ -20,7 +20,7 @@ def main():
     img = pre_process(img)
     img = np.array([img])
 
-    steering = float(model.predict(img))
+    steering = -float(model.predict(img))
     print(steering * steering_sensitivity)  # When done comment this
 
     motor.move(speed=max_speed, turn=steering * steering_sensitivity)
