@@ -8,15 +8,14 @@ from tensorflow.keras.models import load_model
 
 # Preprocess image for neural network, MUST be same on Training and Predict!
 def pre_process(img):
-    img = img[20:, :, :]        # Crop image
+    img = img[40:, :, :]        # Crop image
     img = img / 255             # Normalization
 
     return img
 
 
 def main():
-    # img = cam.get_img(False, width=200, height=86)
-    img = cam.get_img(True, width=200, height=86)
+    img = cam.get_img(True, width=200, height=106)
     img = np.asarray(img)   # Need this ?
     img = pre_process(img)
     img = np.array([img])

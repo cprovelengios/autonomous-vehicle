@@ -37,7 +37,7 @@ def augment_image(img_path, steering):
 
 # Preprocess image for neural network, MUST be same on Training and Predict!
 def pre_process(img):
-    img = img[20:, :, :]        # Crop image
+    img = img[40:, :, :]        # Crop image
     img = img / 255             # Normalization
 
     return img
