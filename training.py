@@ -59,22 +59,29 @@ def main():
     # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
     model = create_model()
 
+    # Select if want save the model
+    save_model = False
+
+    comment = ''    # Write here comment about model
     timestamp = datetime.now().strftime("%d_%m_%Y-%H:%M:%S")
-    csv_logger = CSVLogger(f'Models/log_{timestamp}.csv', append=True, separator=';')
+
+    if comment == '':
+        name = timestamp
+    else:
+        name = f'{comment}_{timestamp}'
+
+    csv_logger = CSVLogger(f'Models/log_{name}.csv', append=True, separator=';')
 
     # Training, for better results increase data, balance better, change augmentation method
     history = model.fit(data_gen(x_train, x_test, 100, 1),
-                        steps_per_epoch=5,    # How many times in every epoch will take batch_size random images to train (100)
-                        epochs=5,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (15)
+                        steps_per_epoch=100,    # How many times in every epoch will take batch_size random images to train (100)
+                        epochs=15,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (15)
                         validation_data=data_gen(y_train, y_test, 50, 0),
                         validation_steps=50,
                         callbacks=[csv_logger])
 
-    # Save the model
-    save_model = False
-
     if save_model:
-        model.save(f'Models/model_{timestamp}.h5')
+        model.save(f'Models/model_{name}.h5')
         print('Model Saved')
     else:
         os.remove(f'Models/log_{timestamp}.csv')
