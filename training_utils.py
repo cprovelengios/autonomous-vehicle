@@ -35,7 +35,7 @@ def augment_image(img_path, steering):
     return img, steering
 
 
-# Preprocess image for neural network, by nvidia ??? Must same on predict!!!
+# Preprocess image for neural network, MUST be same on Training and Predict!
 def pre_process(img):
     img = img[20:, :, :]        # Crop image
     img = img / 255             # Normalization
@@ -43,10 +43,9 @@ def pre_process(img):
     return img
 
 
-# # Preprocess image for neural network, by nvidia ??? Must same on predict!!!
 # def pre_process(img):
 #     img = img[54:120, :, :]                     # Crop image
-#     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace, not sure about this!!!
+#     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
 #     img = cv2.GaussianBlur(img,  (3, 3), 0)
 #     img = cv2.resize(img, (200, 66))
 #     img = img / 255                             # Normalization
@@ -54,7 +53,7 @@ def pre_process(img):
 #     return img
 
 
-# Create model, by nvidia ??? Check bookmark!!!
+# Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
 def create_model():
     model = tf.keras.models.Sequential()
 

@@ -41,7 +41,7 @@ def main():
         plt.imshow(img)
         plt.show()
 
-    # Preprocess image for neural network, by nvidia ??? Must same on predict!!!
+    # Preprocess image for neural network, MUST be same on Training and Predict!
     check_pre_process = False
 
     if check_pre_process:
@@ -56,13 +56,13 @@ def main():
         plt.imshow(img)
         plt.show()
 
-    # Create model, by nvidia ???
+    # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
     model = create_model()
 
     timestamp = datetime.now().strftime("%d_%m_%Y-%H:%M:%S")
     csv_logger = CSVLogger(f'Models/log_{timestamp}.csv', append=True, separator=';')
 
-    # Training, for better results increase data, balance better, change augmentation method, change model
+    # Training, for better results increase data, balance better, change augmentation method
     history = model.fit(data_gen(x_train, x_test, 100, 1),
                         steps_per_epoch=5,    # How many times in every epoch will take batch_size random images to train (100)
                         epochs=5,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (15)

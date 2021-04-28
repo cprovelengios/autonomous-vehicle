@@ -6,7 +6,7 @@ from motor import Motor
 from tensorflow.keras.models import load_model
 
 
-# Preprocess image for neural network, by nvidia ??? Must same on predict!!!
+# Preprocess image for neural network, MUST be same on Training and Predict!
 def pre_process(img):
     img = img[20:, :, :]        # Crop image
     img = img / 255             # Normalization
@@ -17,7 +17,7 @@ def pre_process(img):
 def main():
     # img = cam.get_img(False, width=200, height=86)
     img = cam.get_img(True, width=200, height=86)
-    img = np.asarray(img)   # Need this ???
+    img = np.asarray(img)   # Need this ?
     img = pre_process(img)
     img = np.array([img])
 
@@ -31,7 +31,7 @@ def main():
 if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     max_speed = 0.25
-    steering_sensitivity = 1    # Maybe 0.7 ???
+    steering_sensitivity = 1    # Maybe 0.7 ?
 
     model = load_model('model.h5')
     # Add Traffic Sign Detection, just a haarcascade.

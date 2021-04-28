@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 
 
 if __name__ == '__main__':
-    steering_sensitivity = 1    # Maybe 0.7 ??
+    steering_sensitivity = 1    # Maybe 0.7 ?
     model = load_model('Models/model_v0.h5')
 
     path = 'Training_Data'
