@@ -1,7 +1,9 @@
 #!/usr/bin/python3.7
 import cv2
 import numpy as np
+import pandas as pd
 import tensorflow as tf
+import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from imgaug import augmenters as iaa
 from tensorflow.keras.layers import *
@@ -94,3 +96,43 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
             steering_batch.append(steering)
 
         yield np.asarray(img_batch), np.asarray(steering_batch)
+
+
+def main():
+    data = pd.read_csv(f'Training_Data/log_{0}.csv', names=['Image', 'Steering'])
+    row_data = data.iloc[np.random.randint(len(data))]
+    image_path = row_data[0].split('/', 5)[-1]
+    steering = float(row_data[1])
+
+    # Check augmentation image function
+    check_augment_image = True
+
+    if check_augment_image:
+        fig = plt.figure(figsize=(9, 7))
+        fig.add_subplot(1, 2, 1)
+        image = mpimg.imread(image_path)
+        plt.imshow(image)
+
+        img, st = augment_image(image_path, steering)
+        print(f'Steering before augmentation: {steering}\nSteering after augmentation: {st}')
+        fig.add_subplot(1, 2, 2)
+        plt.imshow(img)
+        plt.show()
+
+    # Check preprocess image function
+    check_pre_process = True
+
+    if check_pre_process:
+        fig = plt.figure(figsize=(9, 7))
+        fig.add_subplot(1, 2, 1)
+        image = mpimg.imread(image_path)
+        plt.imshow(image)
+
+        img = pre_process(mpimg.imread(image_path))
+        fig.add_subplot(1, 2, 2)
+        plt.imshow(img)
+        plt.show()
+
+
+if __name__ == '__main__':
+    main()

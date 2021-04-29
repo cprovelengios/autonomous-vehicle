@@ -26,49 +26,15 @@ def main():
     x_train, y_train, x_test, y_test = train_test_split(images_path, steerings, test_size=0.2, random_state=42)
     print(f'\nTotal Training Images: {len(x_train)}\nTotal Validation Images: {len(y_train)}\n')
 
-    # Data augmentation
-    check_augment_image = False
-
-    if check_augment_image:
-        index = np.random.randint(len(x_train))
-        fig = plt.figure(figsize=(9, 7))
-        fig.add_subplot(1, 2, 1)
-        image = mpimg.imread(x_train[index])
-        plt.imshow(image)
-
-        img, st = augment_image(x_train[index], x_test[index])
-        fig.add_subplot(1, 2, 2)
-        plt.imshow(img)
-        plt.show()
-
-    # Preprocess image for neural network, MUST be same on Training and Predict!
-    check_pre_process = False
-
-    if check_pre_process:
-        index = np.random.randint(len(x_train))
-        fig = plt.figure(figsize=(9, 7))
-        fig.add_subplot(1, 2, 1)
-        image = mpimg.imread(x_train[index])
-        plt.imshow(image)
-
-        img = pre_process(mpimg.imread(x_train[index]))
-        fig.add_subplot(1, 2, 2)
-        plt.imshow(img)
-        plt.show()
-
     # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
     model = create_model()
 
-    # Select if want save the model
+    # Select if you want to save the model and if you want to add a comment to the name
     save_model = False
+    comment = ''
 
-    comment = ''    # Write here comment about model
     timestamp = datetime.now().strftime("%d_%m_%Y-%H:%M:%S")
-
-    if comment == '':
-        name = timestamp
-    else:
-        name = f'{comment}_{timestamp}'
+    name = timestamp if comment == '' else f'{comment}_{timestamp}'
 
     csv_logger = CSVLogger(f'Models/log_{name}.csv', append=True, separator=';')
 

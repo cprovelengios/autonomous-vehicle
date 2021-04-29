@@ -87,3 +87,14 @@ def load_data(path, data):
     steering = np.asarray(steering)
 
     return images_path, steering
+
+
+def main():
+    path = 'Training_Data'
+    data = import_data_info(path=path, start_folder=0, end_folder=1)
+
+    visualize_balance_data(data, display=True, balance=True)
+
+
+if __name__ == '__main__':
+    main()
