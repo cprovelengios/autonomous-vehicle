@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 def main():
     # Import data info, select which folders to import
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=1)
+    data = import_data_info(path=path, start_folder=2, end_folder=3)
     # print(f'{data.head()}\n\n{data.tail()}')
     # pd.set_option('display.max_rows', None)
     # print(data)

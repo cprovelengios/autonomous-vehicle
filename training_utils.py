@@ -39,20 +39,12 @@ def augment_image(img_path, steering):
 
 # Preprocess image for neural network, MUST be same on Training and Predict!
 def pre_process(img):
-    img = img[40:, :, :]        # Crop image
-    img = img / 255             # Normalization
+    img = img[40:, :, :]                        # Crop image
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
+    img = cv2.GaussianBlur(img,  (3, 3), 0)
+    img = img / 255                             # Normalization
 
     return img
-
-
-# def pre_process(img):
-#     img = img[54:120, :, :]                     # Crop image
-#     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
-#     img = cv2.GaussianBlur(img,  (3, 3), 0)
-#     img = cv2.resize(img, (200, 66))
-#     img = img / 255                             # Normalization
-#
-#     return img
 
 
 # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
@@ -99,13 +91,13 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 
 def main():
-    data = pd.read_csv(f'Training_Data/log_{0}.csv', names=['Image', 'Steering'])
+    data = pd.read_csv(f'Training_Data/log_{2}.csv', names=['Image', 'Steering'])
     row_data = data.iloc[np.random.randint(len(data))]
     image_path = row_data[0].split('/', 5)[-1]
     steering = float(row_data[1])
 
     # Check augmentation image function
-    check_augment_image = True
+    check_augment_image = False
 
     if check_augment_image:
         fig = plt.figure(figsize=(9, 7))

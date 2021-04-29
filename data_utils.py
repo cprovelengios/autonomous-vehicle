@@ -91,7 +91,7 @@ def load_data(path, data):
 
 def main():
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=1)
+    data = import_data_info(path=path, start_folder=2, end_folder=3)
 
     visualize_balance_data(data, display=True, balance=True)
 
