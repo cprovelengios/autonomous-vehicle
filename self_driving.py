@@ -23,7 +23,7 @@ def main():
         sleep(0.5)
 
     if start:
-        img = cam.get_img(True, width=200, height=106)
+        img = cam.get_img(True, width=200, height=76)
         img = pre_process(img)
         img = np.array([img])
 

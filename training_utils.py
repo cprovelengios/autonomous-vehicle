@@ -80,7 +80,7 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 def main():
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=2, end_folder=3)
+    data = import_data_info(path=path, start_folder=0, end_folder=1)
     images_path, steerings = load_data(path, data)
 
     index = np.random.randint(len(data))

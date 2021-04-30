@@ -24,7 +24,7 @@ def main():
 
     motor.move(speed=throttle, turn=steering)
 
-    img = cam.get_img(False, width=200, height=106)
+    img = cam.get_img(False, width=200, height=76)
     img = pre_process(img)
     img = np.array([img])
 
