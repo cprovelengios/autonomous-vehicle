@@ -24,13 +24,14 @@ def main():
 
     motor.move(speed=throttle, turn=steering)
 
-    img = cam.get_img(True, width=200, height=106)
+    img = cam.get_img(False, width=200, height=106)
     img = pre_process(img)
     img = np.array([img])
 
     steering = -float(model.predict(img)) * steering_sensitivity
     print(steering)
 
+    cam.get_img(True)
     cv2.waitKey(1)
 
 
