@@ -4,6 +4,7 @@ import matplotlib.image as mpimg
 from data_utils import *
 from imgaug import augmenters as iaa
 from tensorflow.keras.layers import *
+from tensorflow.keras.models import load_model
 
 config = tf.compat.v1.ConfigProto()             # Error: Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERRO
 config.gpu_options.allow_growth = True          # The process grow the memory usage as it is needed by the process
@@ -119,6 +120,26 @@ def main():
         sub.set_title(f'After preprocess')
         plt.imshow(img)
         plt.show()
+
+    # Check model with saved images
+    check_model = True
+
+    if check_model:
+        model = load_model('Models/model_yuv_tape_29_04_2021-14:00:50.h5')
+        steering_sensitivity = 1
+        test_images = 10
+
+        for i in range(test_images):
+            index = np.random.randint(len(images_path))
+            img = cv2.imread(images_path[index])
+            img = pre_process(img)
+            img = np.array([img])
+
+            steering = -float(model.predict(img)) * steering_sensitivity
+            print(steering)
+
+            cv2.imshow('Test Image', cv2.imread(images_path[index]))
+            cv2.waitKey(0)
 
 
 if __name__ == '__main__':

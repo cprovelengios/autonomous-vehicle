@@ -40,6 +40,7 @@ def main():
             sleep(0.5)
         elif js_values['select'] == 1:
             cv2.destroyAllWindows()
+            motor.stop()
             sys.exit()
         elif js_values['start'] == 1:
             camera = not camera
@@ -84,6 +85,7 @@ if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     max_speed = [0.25, 0.5, 0.75, 1]
     speed_option = 0
+
     get_movement = ['joystick', 'keyboard']
     joystick_mode = ['buttons', 'analog']
     joystick_option = 0

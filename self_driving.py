@@ -40,11 +40,13 @@ def main():
 if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     max_speed = 0.25
-    steering_sensitivity = 1
     start = False
 
-    js.init()
     model = load_model('Models/model_yuv_tape_29_04_2021-14:00:50.h5')
+    steering_sensitivity = 1
+
+    js.init()
+
     # Add Traffic Sign Detection (haarcascade)
 
     while True:
