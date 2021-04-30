@@ -125,7 +125,7 @@ def main():
     check_model = True
 
     if check_model:
-        model = load_model('Models/model_yuv_tape_29_04_2021-14:00:50.h5')
+        model = load_model('Models/model.h5')
         steering_sensitivity = 1
         test_images = 10
 

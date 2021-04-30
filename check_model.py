@@ -24,7 +24,7 @@ def main():
 
     motor.move(speed=throttle, turn=steering)
 
-    img = cam.get_img(False, width=200, height=76)
+    img = cam.get_img(False, width=200, height=106)
     img = pre_process(img)
     img = np.array([img])
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     max_speed = 0.5
 
-    model = load_model('Models/model_yuv_tape_29_04_2021-14:00:50.h5')
+    model = load_model('Models/model.h5')
     steering_sensitivity = 1
 
     js.init()
