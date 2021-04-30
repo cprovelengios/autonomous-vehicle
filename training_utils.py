@@ -1,10 +1,7 @@
 #!/usr/bin/python3.7
-import cv2
-import numpy as np
-import pandas as pd
 import tensorflow as tf
-import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from data_utils import *
 from imgaug import augmenters as iaa
 from tensorflow.keras.layers import *
 
@@ -35,16 +32,6 @@ def augment_image(img_path, steering):
         steering = -steering
 
     return img, steering
-
-
-# Preprocess image for neural network, MUST be same on Training and Predict!
-def pre_process(img):
-    img = img[40:, :, :]                        # Crop image
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
-    img = cv2.GaussianBlur(img,  (3, 3), 0)
-    img = img / 255                             # Normalization
-
-    return img
 
 
 # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
@@ -91,23 +78,28 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 
 def main():
-    data = pd.read_csv(f'Training_Data/log_{2}.csv', names=['Image', 'Steering'])
-    row_data = data.iloc[np.random.randint(len(data))]
-    image_path = row_data[0].split('/', 5)[-1]
-    steering = float(row_data[1])
+    path = 'Training_Data'
+    data = import_data_info(path=path, start_folder=2, end_folder=3)
+    images_path, steerings = load_data(path, data)
+
+    index = np.random.randint(len(data))
+    image_path = images_path[index]
+    steering = steerings[index]
 
     # Check augmentation image function
-    check_augment_image = False
+    check_augment_image = True
 
     if check_augment_image:
-        fig = plt.figure(figsize=(9, 7))
-        fig.add_subplot(1, 2, 1)
+        fig = plt.figure(figsize=(8, 6))
+        fig.canvas.set_window_title('Augmentation image')
+        sub = fig.add_subplot(1, 2, 1)
+        sub.set_title(f'Steering before augmentation: {steering}')
         image = mpimg.imread(image_path)
         plt.imshow(image)
 
         img, st = augment_image(image_path, steering)
-        print(f'Steering before augmentation: {steering}\nSteering after augmentation: {st}')
-        fig.add_subplot(1, 2, 2)
+        sub = fig.add_subplot(1, 2, 2)
+        sub.set_title(f'Steering after augmentation: {st}')
         plt.imshow(img)
         plt.show()
 
@@ -115,13 +107,16 @@ def main():
     check_pre_process = True
 
     if check_pre_process:
-        fig = plt.figure(figsize=(9, 7))
-        fig.add_subplot(1, 2, 1)
+        fig = plt.figure(figsize=(8, 6))
+        fig.canvas.set_window_title('Preprocess image')
+        sub = fig.add_subplot(1, 2, 1)
+        sub.set_title(f'Before preprocess')
         image = mpimg.imread(image_path)
         plt.imshow(image)
 
         img = pre_process(mpimg.imread(image_path))
-        fig.add_subplot(1, 2, 2)
+        sub = fig.add_subplot(1, 2, 2)
+        sub.set_title(f'After preprocess')
         plt.imshow(img)
         plt.show()
 

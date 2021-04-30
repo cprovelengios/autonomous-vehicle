@@ -1,22 +1,11 @@
 #!/usr/bin/python3.7
 import sys
-import cv2
-import numpy as np
 import camera as cam
 import joystick as js
 from time import sleep
 from motor import Motor
+from data_utils import *
 from tensorflow.keras.models import load_model
-
-
-# Preprocess image for neural network, MUST be same on Training and Predict!
-def pre_process(img):
-    img = img[40:, :, :]                        # Crop image
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
-    img = cv2.GaussianBlur(img,  (3, 3), 0)
-    img = img / 255                             # Normalization
-
-    return img
 
 
 def main():

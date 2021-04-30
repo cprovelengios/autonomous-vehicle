@@ -39,6 +39,7 @@ def main():
             print(f'Joystick input: {joystick_mode[joystick_option]} mode')
             sleep(0.5)
         elif js_values['select'] == 1:
+            cv2.destroyAllWindows()
             sys.exit()
         elif js_values['start'] == 1:
             camera = not camera

@@ -1,5 +1,6 @@
 #!/usr/bin/python3.7
 import os
+import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -87,6 +88,16 @@ def load_data(path, data):
     steering = np.asarray(steering)
 
     return images_path, steering
+
+
+# Preprocess image for neural network
+def pre_process(img):
+    img = img[40:, :, :]                        # Crop image
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
+    img = cv2.GaussianBlur(img,  (3, 3), 0)
+    img = img / 255                             # Normalization
+
+    return img
 
 
 def main():
