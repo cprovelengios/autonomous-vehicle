@@ -49,7 +49,7 @@ def main():
             print('Recording Stopped')
 
         record += 1
-        sleep(0.3)      # sleep until user release the button
+        sleep(0.5)      # sleep until user release the button
 
     if record == 1:
         img = cam.get_img(False, width=200, height=106)
