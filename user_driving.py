@@ -25,11 +25,11 @@ def main():
             elif js_values['R2']:
                 speed_option = (speed_option + 1) % 4
                 print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
-                sleep(0.5)
+                sleep(0.3)
             elif js_values['L2']:
                 speed_option = (speed_option - 1) % 4
                 print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
-                sleep(0.5)
+                sleep(0.3)
         else:
             steering = js_values['axis1']
             throttle = -js_values['axis4']
@@ -37,14 +37,14 @@ def main():
         if js_values['x'] == 1:
             joystick_option = (joystick_option + 1) % 2
             print(f'Joystick input: {joystick_mode[joystick_option]} mode')
-            sleep(0.5)
+            sleep(0.3)
         elif js_values['select'] == 1:
             cv2.destroyAllWindows()
             motor.stop()
             sys.exit()
         elif js_values['start'] == 1:
             camera = not camera
-            sleep(0.5)
+            sleep(0.3)
     else:
         steering = 0
         throttle = 0
@@ -62,14 +62,14 @@ def main():
         if kb.get_key('v'):
             speed_option = (speed_option + 1) % 4
             print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
-            sleep(0.5)
+            sleep(0.3)
         elif kb.get_key('x'):
             speed_option = (speed_option - 1) % 4
             print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
-            sleep(0.5)
+            sleep(0.3)
         elif kb.get_key('c'):
             camera = not camera
-            sleep(0.5)
+            sleep(0.3)
 
     motor.move(speed=throttle, turn=steering)
 

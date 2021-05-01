@@ -20,7 +20,7 @@ def main():
     elif js_values['start'] == 1:
         start = not start
         print(f'Self driving {"Started" if start else "Stopped"}')
-        sleep(0.5)
+        sleep(0.3)
 
     if start:
         img = cam.get_img(True, width=200, height=106)
