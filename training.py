@@ -14,7 +14,7 @@ def main():
     # print(data)
 
     # Visualize and balance data
-    data = visualize_balance_data(data, display=False, balance=True)
+    data = visualize_balance_data(data, display=True, balance=True)
 
     # Convert data frame to list
     images_path, steerings = load_data(data)
@@ -40,7 +40,7 @@ def main():
     # Training, for better results increase data, balance better, change augmentation method
     history = model.fit(data_gen(x_train, x_test, 100, 1),
                         steps_per_epoch=100,    # How many times in every epoch will take batch_size random images to train (100)
-                        epochs=15,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (15)
+                        epochs=10,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (10)
                         validation_data=data_gen(y_train, y_test, 50, 0),
                         validation_steps=50,
                         callbacks=[csv_logger])

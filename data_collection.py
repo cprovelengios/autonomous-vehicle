@@ -50,7 +50,7 @@ def main():
         sleep(0.3)      # sleep until user release the button
 
     if record == 1:
-        img = cam.get_img(False, width=200, height=76)
+        img = cam.get_img(False, width=240, height=120)
         save_data(img, steering)
     elif record == 2:
         save_log()

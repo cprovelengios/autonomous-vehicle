@@ -24,11 +24,11 @@ def main():
 
     motor.move(speed=throttle, turn=steering)
 
-    img = cam.get_img(True, width=200, height=76)
+    img = cam.get_img(True, width=240, height=120)
     img = pre_process(img)
     img = np.array([img])
 
-    steering = -float(model.predict(img)) * steering_sensitivity
+    steering = float(model.predict(img)) * steering_sensitivity
     print(steering)
 
     cv2.waitKey(1)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     max_speed = 0.5
 
     model = load_model('Models/model.h5')
-    steering_sensitivity = 0.45
+    steering_sensitivity = 1
 
     js.init()
 

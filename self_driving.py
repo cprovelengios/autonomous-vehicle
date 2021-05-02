@@ -23,12 +23,12 @@ def main():
         sleep(0.3)
 
     if start:
-        img = cam.get_img(True, width=200, height=76)
+        img = cam.get_img(False, width=240, height=120)
         img = pre_process(img)
         img = np.array([img])
 
-        steering = -float(model.predict(img)) * steering_sensitivity
-        print(steering)
+        steering = float(model.predict(img)) * steering_sensitivity
+        # print(steering)
 
         motor.move(speed=max_speed, turn=steering)
         cv2.waitKey(1)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     start = False
 
     model = load_model('Models/model.h5')
-    steering_sensitivity = 0.45
+    steering_sensitivity = 1
 
     js.init()
     print('Ready for Self-Driving')

@@ -80,8 +80,8 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 def main():
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=1)
-    images_path, steerings = load_data(path, data)
+    data = import_data_info(path=path, start_folder=0, end_folder=0)
+    images_path, steerings = load_data(data)
 
     index = np.random.randint(len(data))
     image_path = images_path[index]
@@ -135,7 +135,7 @@ def main():
             img = pre_process(img)
             img = np.array([img])
 
-            steering = -float(model.predict(img)) * steering_sensitivity
+            steering = float(model.predict(img)) * steering_sensitivity
             print(steering)
 
             cv2.imshow('Test Image', cv2.imread(images_path[index]))
