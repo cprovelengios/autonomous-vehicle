@@ -22,7 +22,7 @@ def main():
     # cv2.waitKey(0)
 
     # Split data for training and validation(x for training and y for validation)
-    x_train, y_train, x_test, y_test = train_test_split(images_path, steerings, test_size=0.2, random_state=42)
+    x_train, y_train, x_test, y_test = train_test_split(images_path, steerings, test_size=0.2, random_state=10)
     print(f'\nTotal Training Images: {len(x_train)}\nTotal Validation Images: {len(y_train)}\n')
 
     # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/

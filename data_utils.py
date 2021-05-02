@@ -92,7 +92,7 @@ def load_data(path, data):
 
 # Preprocess image for neural network
 def pre_process(img):
-    img = img[40:, :, :]                        # Crop image
+    img = img[10:, :, :]                        # Crop image
     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)  # Convert image to YUV colorspace
     img = cv2.GaussianBlur(img,  (3, 3), 0)
     img = img / 255                             # Normalization

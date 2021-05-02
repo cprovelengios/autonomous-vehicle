@@ -122,7 +122,7 @@ def main():
         plt.show()
 
     # Check model with saved images
-    check_model = True
+    check_model = False
 
     if check_model:
         model = load_model('Models/model.h5')

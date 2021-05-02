@@ -41,23 +41,22 @@ def main():
     elif js_values['L1']:
         throttle = -max_speed
     elif js_values['select'] == 1:
+        cv2.destroyAllWindows()
+        motor.stop()
         sys.exit()
     elif js_values['start'] == 1:
-        if record == 0:
-            print('\nRecording Started')
-        elif record == 1:
-            print('Recording Stopped')
-
+        print(f'Recording {"Started" if record == 0 else "Stopped"}')
         record += 1
         sleep(0.3)      # sleep until user release the button
 
     if record == 1:
-        img = cam.get_img(False, width=200, height=106)
+        img = cam.get_img(False, width=200, height=76)
         save_data(img, steering)
     elif record == 2:
         save_log()
         cv2.destroyAllWindows()
         record = 0
+        print()
 
     motor.move(speed=throttle, turn=steering)
     cv2.waitKey(1)
