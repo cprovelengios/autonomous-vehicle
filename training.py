@@ -17,7 +17,7 @@ def main():
     data = visualize_balance_data(data, display=False, balance=True)
 
     # Convert data frame to list
-    images_path, steerings = load_data(path, data)
+    images_path, steerings = load_data(data)
     # cv2.imshow('Test Image', cv2.imread(images_path[0]))
     # cv2.waitKey(0)
 

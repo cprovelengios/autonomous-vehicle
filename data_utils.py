@@ -14,7 +14,7 @@ def import_data_info(*, path, start_folder, end_folder):
 
     for x in range(start_folder, end_folder + 1):
         data_new = pd.read_csv(os.path.join(path, f'log_{x}.csv'), names=columns)
-        data_new['Image'] = data_new['Image'].str.split('/', 6).str[-1]
+        data_new['Image'] = data_new['Image'].str.split('/', 5).str[-1]
         print(f'Folder {x}: {data_new.shape[0]} Images', end=', ')
         data = data.append(data_new, True)  # True need to continue row index from last append
 
@@ -75,13 +75,13 @@ def visualize_balance_data(data, display=True, balance=False):
 
 
 # Convert data frame to list
-def load_data(path, data):
+def load_data(data):
     images_path = []
     steering = []
 
     for i in range(len(data)):
         indexed_data = data.iloc[i]
-        images_path.append(os.path.join(path, indexed_data[0]))
+        images_path.append(indexed_data[0])
         steering.append(float(indexed_data[1]))
 
     images_path = np.asarray(images_path)
@@ -102,7 +102,7 @@ def pre_process(img):
 
 def main():
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=1)
+    data = import_data_info(path=path, start_folder=0, end_folder=0)
 
     visualize_balance_data(data, display=True, balance=True)
 
