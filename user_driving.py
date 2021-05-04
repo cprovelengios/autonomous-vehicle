@@ -1,15 +1,14 @@
 #!/usr/bin/python3.7
-import sys
-import cv2
 import camera as cam
 import keyboard as kb
 import joystick as js
 from time import sleep
 from motor import Motor
+from data_utils import *
 
 
 def main():
-    global speed_option, joystick_option, camera
+    global speed_option, joystick_option, camera_option, camera
 
     if movement == 'joystick':
         js_values = js.get_js()
@@ -37,6 +36,9 @@ def main():
         if js_values['x'] == 1:
             joystick_option = (joystick_option + 1) % 2
             print(f'Joystick input: {joystick_mode[joystick_option]} mode')
+            sleep(0.3)
+        elif js_values['s'] == 1:
+            camera_option = (camera_option + 1) % 2
             sleep(0.3)
         elif js_values['select'] == 1:
             cv2.destroyAllWindows()
@@ -67,6 +69,9 @@ def main():
             speed_option = (speed_option - 1) % 4
             print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
             sleep(0.3)
+        elif kb.get_key('f'):
+            camera_option = (camera_option + 1) % 2
+            sleep(0.3)
         elif kb.get_key('c'):
             camera = not camera
             sleep(0.3)
@@ -74,7 +79,13 @@ def main():
     motor.move(speed=throttle, turn=steering)
 
     if camera:
-        cam.get_img(True)
+        if camera_option == 0:
+            cam.get_img(True)
+        else:
+            img = cam.get_img(False, 240, 120)
+            img = pre_process(img)
+            img = cv2.resize(img, (640, 360))
+            cv2.imshow('IMG', img)
     else:
         cv2.destroyAllWindows()
 
@@ -89,6 +100,9 @@ if __name__ == '__main__':
     get_movement = ['joystick', 'keyboard']
     joystick_mode = ['buttons', 'analog']
     joystick_option = 0
+
+    camera_mode = ['normal', 'pre_process']
+    camera_option = 0
     camera = False
 
     try:
