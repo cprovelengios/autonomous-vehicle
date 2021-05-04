@@ -30,7 +30,7 @@ def save_log():
 
 
 def main():
-    global record
+    global recorded, record
 
     js_values = js.get_js()
     steering = js_values['axis3']
@@ -43,9 +43,14 @@ def main():
     elif js_values['select'] == 1:
         cv2.destroyAllWindows()
         motor.stop()
+
+        if not recorded:
+            os.remove(new_path)
+
         sys.exit()
     elif js_values['start'] == 1:
         print(f'Recording {"Started" if record == 0 else "Stopped"}')
+        recorded = True
         record += 1
         sleep(0.3)      # sleep until user release the button
 
@@ -58,11 +63,17 @@ def main():
         record = 0
         print()
 
-    motor.move(speed=throttle, turn=steering)
+    motor.move(speed=throttle, turn=steering, data_collection=True)
     cv2.waitKey(1)
 
 
 if __name__ == '__main__':
+    try:
+        max_speed = float(sys.argv[1])
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Max speed(0.00 - 1.00)')
+        sys.exit()
+
     count_folder = 0
     img_list = []
     steering_list = []
@@ -77,7 +88,7 @@ if __name__ == '__main__':
     os.makedirs(new_path)
 
     motor = Motor(21, 20, 16, 26, 13, 19)
-    max_speed = 0.25
+    recorded = False
     record = 0
 
     js.init()
