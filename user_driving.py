@@ -31,8 +31,8 @@ def main():
                 print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
                 sleep(0.3)
         else:
-            steering = js_values['axis1']
-            throttle = -js_values['axis4']
+            steering = js_values['axis3']
+            throttle = -js_values['axis2']
 
         if js_values['x'] == 1:
             joystick_option = (joystick_option + 1) % 2

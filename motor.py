@@ -28,7 +28,7 @@ class Motor:
         self.pwm_b = GPIO.PWM(self.en_b, 100)
         self.pwm_b.start(0)
 
-    def move(self, *, speed=0.5, turn=0., time=0.):
+    def move(self, *, speed=0.5, turn=0., time=0., data_collection=False):
         speed *= 100
 
         # Turn sensitivity depends on speed, from tests that were made the best values are:
@@ -51,11 +51,12 @@ class Motor:
         left_speed = -100 if left_speed < -100 else left_speed
 
         # Minimum speed that car robot can move
-        min_speed = 25
-        right_speed = min_speed if 0.01 < right_speed < min_speed else right_speed
-        right_speed = -min_speed if -min_speed < right_speed < -0.01 else right_speed
-        left_speed = min_speed if 0.01 < left_speed < min_speed else left_speed
-        left_speed = -min_speed if -min_speed < left_speed < -0.01 else left_speed
+        if not data_collection:
+            min_speed = 25
+            right_speed = min_speed if 0.01 < right_speed < min_speed else right_speed
+            right_speed = -min_speed if -min_speed < right_speed < -0.01 else right_speed
+            left_speed = min_speed if 0.01 < left_speed < min_speed else left_speed
+            left_speed = -min_speed if -min_speed < left_speed < -0.01 else left_speed
 
         self.pwm_a.ChangeDutyCycle(abs(right_speed))
         self.pwm_b.ChangeDutyCycle(abs(left_speed))
