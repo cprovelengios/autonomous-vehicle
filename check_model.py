@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     try:
         model = load_model(f'Models/{sys.argv[1]}.h5')
-        steering_sensitivity = int(sys.argv[2])
+        steering_sensitivity = float(sys.argv[2])
     except (IndexError, ValueError):
         print(f'Give required arguments: Name of model and Steering sensitivity')
         sys.exit()

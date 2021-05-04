@@ -82,12 +82,15 @@ def main():
     try:
         folders = list(map(int, sys.argv[1].split('-')))
         check_augment = True if int(sys.argv[2]) == 1 else False
-        check_model = True if int(sys.argv[3]) == 1 else False
 
-        name_model = sys.argv[4] if check_model else ''
-        steering_sensitivity = int(sys.argv[5]) if check_model else 0
+        try:
+            name_model = sys.argv[3]
+            steering_sensitivity = float(sys.argv[4])
+        except IndexError:
+            name_model = ''
+            steering_sensitivity = 0
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or 1), Check model(0 or 1), Name of model and Steering sensitivity')
+        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or 1), Name of model and Steering sensitivity if want check model')
         sys.exit()
 
     path = 'Training_Data'
@@ -111,7 +114,7 @@ def main():
         plt.show()
 
     # Check model with saved images
-    if check_model:
+    if name_model:
         model = load_model(f'Models/{name_model}.h5')
 
         for i in range(len(images_path)):
