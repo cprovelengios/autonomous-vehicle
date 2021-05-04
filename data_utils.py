@@ -1,5 +1,6 @@
 #!/usr/bin/python3.7
 import os
+import sys
 import cv2
 import numpy as np
 import pandas as pd
@@ -90,6 +91,18 @@ def load_data(data):
     return images_path, steering
 
 
+# Check images one by one and see steering values
+def check_images(images_path, steerings):
+    for i in range(len(images_path)):
+        img = cv2.imread(images_path[i])
+        img = pre_process(img)
+        img = cv2.resize(img, (640, 360))
+
+        print(steerings[i])
+        cv2.imshow('Test Image', img)
+        cv2.waitKey(0)
+
+
 # Preprocess image for neural network
 def pre_process(img):
     img = img[54:120, :, :]                     # Crop image
@@ -102,10 +115,21 @@ def pre_process(img):
 
 
 def main():
-    path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=0)
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        check_data = True if int(sys.argv[2]) == 1 else False
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0) and Check data(0 or 1)')
+        sys.exit()
 
-    visualize_balance_data(data, display=True, balance=True)
+    path = 'Training_Data'
+    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
+
+    data = visualize_balance_data(data, display=True, balance=True)
+
+    if check_data:
+        images_path, steerings = load_data(data)
+        check_images(images_path, steerings)
 
 
 if __name__ == '__main__':

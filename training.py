@@ -6,20 +6,28 @@ from sklearn.model_selection import train_test_split
 
 
 def main():
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        save_model = True if int(sys.argv[2]) == 1 else False
+
+        try:
+            comment = sys.argv[3]
+        except IndexError:
+            comment = ''
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0), Save model(0 or 1) and Comment if want for name model')
+        sys.exit()
+
     # Import data info, select which folders to import
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=0)
+    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
     # print(f'{data.head()}\n\n{data.tail()}')
-    # pd.set_option('display.max_rows', None)
-    # print(data)
 
     # Visualize and balance data
     data = visualize_balance_data(data, display=True, balance=True)
 
     # Convert data frame to list
     images_path, steerings = load_data(data)
-    # cv2.imshow('Test Image', cv2.imread(images_path[0]))
-    # cv2.waitKey(0)
 
     # Split data for training and validation(x for training and y for validation)
     x_train, y_train, x_test, y_test = train_test_split(images_path, steerings, test_size=0.2, random_state=10)
@@ -27,10 +35,6 @@ def main():
 
     # Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
     model = create_model()
-
-    # Select if you want to save the model and if you want to add a comment to the name
-    save_model = True
-    comment = ''
 
     timestamp = datetime.now().strftime("%d_%m_%Y-%H:%M:%S")
     name = timestamp if comment == '' else f'{comment}_{timestamp}'

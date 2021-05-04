@@ -103,5 +103,5 @@ if __name__ == '__main__':
 
         while True:
             main()
-    except IndexError:
-        print('Wrong option, 0: joystick - 1: keyboard')
+    except (IndexError, ValueError):
+        print(f'Give required argument: Input mode, 0 for joystick - 1 for keyboard')

@@ -1,5 +1,4 @@
 #!/usr/bin/python3.7
-import sys
 import camera as cam
 import joystick as js
 from time import sleep
@@ -42,8 +41,12 @@ if __name__ == '__main__':
     max_speed = 0.25
     start = False
 
-    model = load_model('Models/model.h5')
-    steering_sensitivity = 1
+    try:
+        model = load_model(f'Models/{sys.argv[1]}.h5')
+        steering_sensitivity = int(sys.argv[2])
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Name of model and Steering sensitivity')
+        sys.exit()
 
     js.init()
     print('Ready for Self-Driving')

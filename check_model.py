@@ -1,5 +1,4 @@
 #!/usr/bin/python3.7
-import sys
 import camera as cam
 import joystick as js
 from motor import Motor
@@ -38,8 +37,12 @@ if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     max_speed = 0.5
 
-    model = load_model('Models/model.h5')
-    steering_sensitivity = 1
+    try:
+        model = load_model(f'Models/{sys.argv[1]}.h5')
+        steering_sensitivity = int(sys.argv[2])
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Name of model and Steering sensitivity')
+        sys.exit()
 
     js.init()
 

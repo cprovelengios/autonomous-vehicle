@@ -79,66 +79,50 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 
 def main():
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        check_augment = True if int(sys.argv[2]) == 1 else False
+        check_model = True if int(sys.argv[3]) == 1 else False
+
+        name_model = sys.argv[4] if check_model else ''
+        steering_sensitivity = int(sys.argv[5]) if check_model else 0
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or 1), Check model(0 or 1), Name of model and Steering sensitivity')
+        sys.exit()
+
     path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=0, end_folder=0)
+    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
     images_path, steerings = load_data(data)
 
-    index = np.random.randint(len(data))
-    image_path = images_path[index]
-    steering = steerings[index]
-
     # Check augmentation image function
-    check_augment_image = True
+    if check_augment:
+        index = np.random.randint(len(images_path))
 
-    if check_augment_image:
         fig = plt.figure(figsize=(8, 6))
         fig.canvas.set_window_title('Augmentation image')
         sub = fig.add_subplot(1, 2, 1)
-        sub.set_title(f'Steering before augmentation: {steering}')
-        image = mpimg.imread(image_path)
-        plt.imshow(image)
+        sub.set_title(f'Steering before augmentation: {steerings[index]}')
+        plt.imshow(mpimg.imread(images_path[index]))
 
-        img, st = augment_image(image_path, steering)
+        img, st = augment_image(images_path[index], steerings[index])
         sub = fig.add_subplot(1, 2, 2)
         sub.set_title(f'Steering after augmentation: {st}')
         plt.imshow(img)
         plt.show()
 
-    # Check preprocess image function
-    check_pre_process = True
-
-    if check_pre_process:
-        fig = plt.figure(figsize=(8, 6))
-        fig.canvas.set_window_title('Preprocess image')
-        sub = fig.add_subplot(1, 2, 1)
-        sub.set_title(f'Before preprocess')
-        image = mpimg.imread(image_path)
-        plt.imshow(image)
-
-        img = pre_process(mpimg.imread(image_path))
-        sub = fig.add_subplot(1, 2, 2)
-        sub.set_title(f'After preprocess')
-        plt.imshow(img)
-        plt.show()
-
     # Check model with saved images
-    check_model = False
-
     if check_model:
-        model = load_model('Models/model.h5')
-        steering_sensitivity = 1
-        test_images = 10
+        model = load_model(f'Models/{name_model}.h5')
 
-        for i in range(test_images):
-            index = np.random.randint(len(images_path))
-            img = cv2.imread(images_path[index])
+        for i in range(len(images_path)):
+            img = cv2.imread(images_path[i])
             img = pre_process(img)
             img = np.array([img])
 
             steering = float(model.predict(img)) * steering_sensitivity
             print(steering)
 
-            cv2.imshow('Test Image', cv2.imread(images_path[index]))
+            cv2.imshow('Test Image', cv2.imread(images_path[i]))
             cv2.waitKey(0)
 
 
