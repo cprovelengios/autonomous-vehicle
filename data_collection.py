@@ -45,7 +45,7 @@ def main():
         motor.stop()
 
         if not recorded:
-            os.remove(new_path)
+            os.rmdir(new_path)
 
         sys.exit()
     elif js_values['start'] == 1:
