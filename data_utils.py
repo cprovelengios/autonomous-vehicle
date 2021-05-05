@@ -125,7 +125,7 @@ def main():
     path = 'Training_Data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
-    data = visualize_balance_data(data, display=True, balance=True)
+    visualize_balance_data(data, display=True, balance=True)
 
     if check_data:
         images_path, steerings = load_data(data)

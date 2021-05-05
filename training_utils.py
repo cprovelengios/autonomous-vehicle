@@ -119,13 +119,14 @@ def main():
 
         for i in range(len(images_path)):
             img = cv2.imread(images_path[i])
-            img = pre_process(img)
+            img = test_img = pre_process(img)
             img = np.array([img])
 
             steering = float(model.predict(img)) * steering_sensitivity
             print(steering)
 
-            cv2.imshow('Test Image', cv2.imread(images_path[i]))
+            test_img = cv2.resize(test_img, (640, 360))
+            cv2.imshow('Test Image', test_img)
             cv2.waitKey(0)
 
 
