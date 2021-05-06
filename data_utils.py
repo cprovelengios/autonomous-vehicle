@@ -4,6 +4,7 @@ import sys
 import cv2
 import numpy as np
 import pandas as pd
+from datetime import datetime
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 
@@ -91,32 +92,6 @@ def load_data(data):
     return images_path, steering
 
 
-# Check images one by one and see steering values
-def check_images(images_path, steerings):
-    index = 0
-    length = len(images_path)
-
-    while True:
-        img = cv2.imread(images_path[index])
-        img = pre_process(img)
-        img = cv2.resize(img, (640, 360))
-
-        print(f'{index:>4}: {steerings[index]:>5}')
-        cv2.imshow('Test Image', img)
-        key = cv2.waitKey(0)
-
-        if key == 83:                       # ->
-            index = (index + 1) % length
-        elif key == 81:                     # <-
-            index = (index - 1) % length
-        elif key == 82:                     # ^
-            print('append')
-        elif key == 84:                     # v
-            print('delete')
-        elif key == 27:
-            break
-
-
 # Preprocess image for neural network
 def pre_process(img):
     img = img[54:120, :, :]                     # Crop image
@@ -126,6 +101,87 @@ def pre_process(img):
     img = img / 255                             # Normalization
 
     return img
+
+
+# Check images and append or delete
+def check_images(path, data):
+    images_path, steerings = load_data(data)
+    index = 0
+    previous_index = -1
+    length = len(images_path)
+    option = 'no'
+    append_index_list = []
+    remove_index_list = []
+
+    while True:
+        if previous_index != index:
+            img = cv2.imread(images_path[index])
+            img = pre_process(img)
+            img = cv2.resize(img, (640, 360))
+
+            print(f'Image: {index:>4}  -  Steering: {steerings[index]:>5}')
+            cv2.imshow('Test Image', img)
+            previous_index = index
+
+        key = cv2.waitKey(0)
+
+        if key == 83:                       # ->
+            index = (index + 1) % length
+        elif key == 81:                     # <-
+            index = (index - 1) % length
+        elif key == 82:                     # ^
+            append_index_list.append(index)
+            print(f'Append Image: {index}')
+        elif key == 84:                     # v
+            remove_index_list.append(index)
+            print(f'Remove Image: {index}')
+        elif key == 27:
+            cv2.destroyAllWindows()
+            break
+
+    # Set removes duplicates
+    remove_index_list = list(set(remove_index_list))
+
+    if len(append_index_list) or len(remove_index_list):
+        print(f'\nYou have select {len(append_index_list)} images to append and {len(remove_index_list)} images to remove')
+        option = input('Do you want to proceed(yes or no): ')
+
+    if option == 'yes':
+        count_folder = 0
+        img_list = []
+        steering_list = []
+        img_list_new = []
+        steering_list_new = []
+
+        while os.path.exists(os.path.join(path, f'IMG{str(count_folder)}')):
+            count_folder += 1
+
+        new_path = path + '/IMG' + str(count_folder)
+        os.makedirs(new_path)
+
+        data.drop(data.index[remove_index_list], inplace=True)
+
+        for i in append_index_list:
+            img_list.append(data['Image'][i])
+            steering_list.append(data['Steering'][i])
+
+        raw_data = {'Image': img_list, 'Steering': steering_list}
+        data_new = pd.DataFrame(raw_data)
+        data = data.append(data_new, True)  # True need to continue row index from last append
+
+        for i in range(len(data)):
+            img = cv2.imread(data.iloc[i][0])
+            timestamp = str(datetime.timestamp(datetime.now())).replace('.', '')
+            file_name = os.path.join(os.getcwd(), new_path, f'Image_{timestamp}.jpg')
+            cv2.imwrite(file_name, img)
+
+            img_list_new.append(file_name)
+            steering_list_new.append(data.iloc[i][1])
+
+        raw_data = {'Image': img_list_new, 'Steering': steering_list_new}
+        data_new = pd.DataFrame(raw_data)
+        data_new.to_csv(os.path.join(path, f'log_{str(count_folder)}.csv'), index=False, header=False)
+        print(f'\nNew Log Saved, total images: {len(img_list_new)}')
 
 
 def main():
@@ -140,12 +196,13 @@ def main():
     path = 'Training_Data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
+    # Visualize and balance data
     if visualize_data:
         visualize_balance_data(data, display=True, balance=True)
 
+    # Check images and append or delete
     if check_data:
-        images_path, steerings = load_data(data)
-        check_images(images_path, steerings)
+        check_images(path, data)
 
 
 if __name__ == '__main__':
