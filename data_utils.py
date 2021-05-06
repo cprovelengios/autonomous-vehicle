@@ -93,14 +93,28 @@ def load_data(data):
 
 # Check images one by one and see steering values
 def check_images(images_path, steerings):
-    for i in range(len(images_path)):
-        img = cv2.imread(images_path[i])
+    index = 0
+    length = len(images_path)
+
+    while True:
+        img = cv2.imread(images_path[index])
         img = pre_process(img)
         img = cv2.resize(img, (640, 360))
 
-        print(steerings[i])
+        print(f'{index:>4}: {steerings[index]:>5}')
         cv2.imshow('Test Image', img)
-        cv2.waitKey(0)
+        key = cv2.waitKey(0)
+
+        if key == 83:                       # ->
+            index = (index + 1) % length
+        elif key == 81:                     # <-
+            index = (index - 1) % length
+        elif key == 82:                     # ^
+            print('append')
+        elif key == 84:                     # v
+            print('delete')
+        elif key == 27:
+            break
 
 
 # Preprocess image for neural network
@@ -117,15 +131,17 @@ def pre_process(img):
 def main():
     try:
         folders = list(map(int, sys.argv[1].split('-')))
-        check_data = True if int(sys.argv[2]) == 1 else False
+        visualize_data = True if int(sys.argv[2]) == 1 else False
+        check_data = True if int(sys.argv[3]) == 1 else False
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0) and Check data(0 or 1)')
+        print(f'Give required arguments: Start folder-End folder(0-0), Visualize data(0 or 1) and Check data(0 or 1)')
         sys.exit()
 
     path = 'Training_Data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
-    visualize_balance_data(data, display=True, balance=True)
+    if visualize_data:
+        visualize_balance_data(data, display=True, balance=True)
 
     if check_data:
         images_path, steerings = load_data(data)

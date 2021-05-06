@@ -78,27 +78,9 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
         yield np.asarray(img_batch), np.asarray(steering_batch)
 
 
-def main():
-    try:
-        folders = list(map(int, sys.argv[1].split('-')))
-        check_augment = True if int(sys.argv[2]) == 1 else False
-
-        try:
-            name_model = sys.argv[3]
-            steering_sensitivity = float(sys.argv[4])
-        except IndexError:
-            name_model = ''
-            steering_sensitivity = 0
-    except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or 1), Name of model and Steering sensitivity if want check model')
-        sys.exit()
-
-    path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
-    images_path, steerings = load_data(data)
-
-    # Check augmentation image function
-    if check_augment:
+# Check augmentation image function
+def check_augmentation(check_augment, images_path, steerings):
+    for i in range(check_augment):
         index = np.random.randint(len(images_path))
 
         fig = plt.figure(figsize=(8, 6))
@@ -113,21 +95,59 @@ def main():
         plt.imshow(img)
         plt.show()
 
-    # Check model with saved images
+
+# Check Model Predictions with saved images
+def check_model(name_model, images_path, steerings, steering_sensitivity):
+    model = load_model(f'Models/{name_model}.h5')
+    index = 0
+    length = len(images_path)
+
+    while True:
+        img = cv2.imread(images_path[index])
+        img = test_img = pre_process(img)
+        img = np.array([img])
+
+        steering = float(model.predict(img)) * steering_sensitivity
+        print(f'Image: {index:>4}  -  Prediction: {np.round(steering, 2):>5}  -  True: {steerings[index]:>5}')
+
+        test_img = cv2.resize(test_img, (640, 360))
+        cv2.imshow('Test Image', test_img)
+        key = cv2.waitKey(0)
+
+        if key == 83:                       # ->
+            index = (index + 1) % length
+        elif key == 81:                     # <-
+            index = (index - 1) % length
+        elif key == 27:                     # esc
+            break
+
+
+def main():
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        check_augment = int(sys.argv[2])
+
+        try:
+            name_model = sys.argv[3]
+            steering_sensitivity = float(sys.argv[4])
+        except IndexError:
+            name_model = ''
+            steering_sensitivity = 0
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or Number), Name of model and Steering sensitivity if want check model')
+        sys.exit()
+
+    path = 'Training_Data'
+    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
+    images_path, steerings = load_data(data)
+
+    # Check augmentation image function
+    if check_augment:
+        check_augmentation(check_augment, images_path, steerings)
+
+    # Check Model Predictions with saved images
     if name_model:
-        model = load_model(f'Models/{name_model}.h5')
-
-        for i in range(len(images_path)):
-            img = cv2.imread(images_path[i])
-            img = test_img = pre_process(img)
-            img = np.array([img])
-
-            steering = float(model.predict(img)) * steering_sensitivity
-            print(steering)
-
-            test_img = cv2.resize(test_img, (640, 360))
-            cv2.imshow('Test Image', test_img)
-            cv2.waitKey(0)
+        check_model(name_model, images_path, steerings, steering_sensitivity)
 
 
 if __name__ == '__main__':
