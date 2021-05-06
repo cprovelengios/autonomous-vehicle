@@ -146,6 +146,9 @@ def check_images(path, data):
         print(f'\nYou have select {len(append_index_list)} images to append and {len(remove_index_list)} images to remove')
         option = input('Do you want to proceed(yes or no): ')
 
+        if option != 'yes':
+            option = input('Images will be lost, do you want to proceed(yes or no): ')
+
     if option == 'yes':
         count_folder = 0
         img_list = []
