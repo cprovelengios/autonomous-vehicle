@@ -188,14 +188,6 @@ def check_images(path, data):
 
 
 def main():
-    try:
-        folders = list(map(int, sys.argv[1].split('-')))
-        visualize_data = True if int(sys.argv[2]) == 1 else False
-        check_data = True if int(sys.argv[3]) == 1 else False
-    except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Visualize data(0 or 1) and Check data(0 or 1)')
-        sys.exit()
-
     path = 'Training_Data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
@@ -209,4 +201,12 @@ def main():
 
 
 if __name__ == '__main__':
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        visualize_data = True if int(sys.argv[2]) == 1 else False
+        check_data = True if int(sys.argv[3]) == 1 else False
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0), Visualize data(0 or 1) and Check data(0 or 1)')
+        sys.exit()
+
     main()

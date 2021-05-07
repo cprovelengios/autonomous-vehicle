@@ -79,7 +79,7 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
 
 
 # Check augmentation image function
-def check_augmentation(check_augment, images_path, steerings):
+def check_augmentation(images_path, steerings):
     for i in range(check_augment):
         index = np.random.randint(len(images_path))
 
@@ -97,7 +97,7 @@ def check_augmentation(check_augment, images_path, steerings):
 
 
 # Check Model Predictions with saved images
-def check_model(name_model, images_path, steerings, steering_sensitivity):
+def check_model(images_path, steerings):
     model = load_model(f'Models/{name_model}.h5')
     index = 0
     length = len(images_path)
@@ -123,6 +123,20 @@ def check_model(name_model, images_path, steerings, steering_sensitivity):
 
 
 def main():
+    path = 'Training_Data'
+    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
+    images_path, steerings = load_data(data)
+
+    # Check augmentation image function
+    if check_augment:
+        check_augmentation(images_path, steerings)
+
+    # Check Model Predictions with saved images
+    if name_model:
+        check_model(images_path, steerings)
+
+
+if __name__ == '__main__':
     try:
         folders = list(map(int, sys.argv[1].split('-')))
         check_augment = int(sys.argv[2])
@@ -137,18 +151,4 @@ def main():
         print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or Number), Name of model and Steering sensitivity if want check model')
         sys.exit()
 
-    path = 'Training_Data'
-    data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
-    images_path, steerings = load_data(data)
-
-    # Check augmentation image function
-    if check_augment:
-        check_augmentation(check_augment, images_path, steerings)
-
-    # Check Model Predictions with saved images
-    if name_model:
-        check_model(name_model, images_path, steerings, steering_sensitivity)
-
-
-if __name__ == '__main__':
     main()

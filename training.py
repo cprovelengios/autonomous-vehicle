@@ -6,18 +6,6 @@ from sklearn.model_selection import train_test_split
 
 
 def main():
-    try:
-        folders = list(map(int, sys.argv[1].split('-')))
-        save_model = True if int(sys.argv[2]) == 1 else False
-
-        try:
-            comment = sys.argv[3]
-        except IndexError:
-            comment = ''
-    except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Save model(0 or 1) and Comment if want for name model')
-        sys.exit()
-
     # Import data info, select which folders to import
     path = 'Training_Data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
@@ -53,7 +41,7 @@ def main():
         model.save(f'Models/model_{name}.h5')
         print('Model Saved')
     else:
-        os.remove(f'Models/log_{timestamp}.csv')
+        os.remove(f'Models/log_{name}.csv')
 
     # Plot results of training
     plt.plot(history.history['loss'])
@@ -65,4 +53,16 @@ def main():
 
 
 if __name__ == '__main__':
+    try:
+        folders = list(map(int, sys.argv[1].split('-')))
+        save_model = True if int(sys.argv[2]) == 1 else False
+
+        try:
+            comment = sys.argv[3]
+        except IndexError:
+            comment = ''
+    except (IndexError, ValueError):
+        print(f'Give required arguments: Start folder-End folder(0-0), Save model(0 or 1) and Comment if want for name model')
+        sys.exit()
+
     main()
