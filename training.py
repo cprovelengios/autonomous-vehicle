@@ -12,7 +12,7 @@ def main():
     # print(f'{data.head()}\n\n{data.tail()}')
 
     # Visualize and balance data
-    data = visualize_balance_data(data, display=True, balance=True)
+    data = visualize_balance_data(data, display=True, balance=balance_data)
 
     # Convert data frame to list
     images_path, steerings = load_data(data)
@@ -55,14 +55,15 @@ def main():
 if __name__ == '__main__':
     try:
         folders = list(map(int, sys.argv[1].split('-')))
-        save_model = True if int(sys.argv[2]) == 1 else False
+        balance_data = int(sys.argv[2])
+        save_model = True if int(sys.argv[3]) == 1 else False
 
         try:
-            comment = sys.argv[3]
+            comment = sys.argv[4]
         except IndexError:
             comment = ''
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Save model(0 or 1) and Comment if want for name model')
+        print(f'Give required arguments: Start folder-End folder(0-0), Balance(0 or Number), Save model(0 or 1) and Comment if want for name model')
         sys.exit()
 
     main()

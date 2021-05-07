@@ -26,9 +26,8 @@ def import_data_info(*, path, start_folder, end_folder):
 
 
 # Visualize and balance data
-def visualize_balance_data(data, display=True, balance=False):
+def visualize_balance_data(data, display=True, balance=0):
     number_of_bins = 201    # It defines the number of equal-width bins in the given range. Steering take values from -1 to 1, so (2 / 0.01) + 1 = 201, + 1 for 0 value
-    samples_per_bin = 300   # It defines how many samples it will keep after balance for every bin
     remove_index_list = []
 
     hist, bins = np.histogram(data['Steering'], number_of_bins)
@@ -37,7 +36,7 @@ def visualize_balance_data(data, display=True, balance=False):
 
     if display:
         plt.bar(center, hist, width=0.03)
-        plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (samples_per_bin, samples_per_bin))
+        plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (balance, balance))
         plt.title('Data Visualisation')
         plt.xlabel('Steering Angle')
         plt.ylabel('No of Samples')
@@ -58,7 +57,7 @@ def visualize_balance_data(data, display=True, balance=False):
                     bin_data_list.append(i)
 
             bin_data_list = shuffle(bin_data_list)
-            bin_data_list = bin_data_list[samples_per_bin:]
+            bin_data_list = bin_data_list[balance:]
             remove_index_list.extend(bin_data_list)
 
         data.drop(data.index[remove_index_list], inplace=True)
@@ -67,7 +66,7 @@ def visualize_balance_data(data, display=True, balance=False):
         if display:
             hist, bins = np.histogram(data['Steering'], number_of_bins)
             plt.bar(center, hist, width=0.03)
-            plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (samples_per_bin, samples_per_bin))
+            plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (balance, balance))
             plt.title('Balanced Data')
             plt.xlabel('Steering Angle')
             plt.ylabel('No of Samples')
@@ -192,8 +191,8 @@ def main():
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
     # Visualize and balance data
-    if visualize_data:
-        visualize_balance_data(data, display=True, balance=True)
+    if balance_data:
+        visualize_balance_data(data, display=True, balance=balance_data)
 
     # Check images and append or delete
     if check_data:
@@ -203,10 +202,10 @@ def main():
 if __name__ == '__main__':
     try:
         folders = list(map(int, sys.argv[1].split('-')))
-        visualize_data = True if int(sys.argv[2]) == 1 else False
+        balance_data = int(sys.argv[2])
         check_data = True if int(sys.argv[3]) == 1 else False
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Visualize data(0 or 1) and Check data(0 or 1)')
+        print(f'Give required arguments: Start folder-End folder(0-0), Balance(0 or Number) and Check data(0 or 1)')
         sys.exit()
 
     main()
