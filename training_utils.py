@@ -1,6 +1,5 @@
 #!/usr/bin/python3.7
 import tensorflow as tf
-import matplotlib.image as mpimg
 from data_utils import *
 from imgaug import augmenters as iaa
 from tensorflow.keras.layers import *
@@ -13,11 +12,11 @@ sess = tf.compat.v1.Session(config=config)
 
 # Data augmentation
 def augment_image(img_path, steering):
-    img = mpimg.imread(img_path)
+    img = cv2.imread(img_path)
 
     # Translational augmentation moves the image along the x and y direction
     if np.random.rand() < 0.5:
-        pan = iaa.Affine(translate_percent={"x": (-0.1, 0.1), "y": (-0.1, 0.1)})
+        pan = iaa.Affine(translate_percent={"x": (-0.05, 0.05), "y": (-0.05, 0.05)}, cval=155)
         img = pan.augment_image(img)
 
     if np.random.rand() < 0.5:
@@ -25,7 +24,7 @@ def augment_image(img_path, steering):
         img = zoom.augment_image(img)
 
     if np.random.rand() < 0.5:
-        brightness = iaa.Multiply((0.5, 2))
+        brightness = iaa.Multiply((0.6, 2))
         img = brightness.augment_image(img)
 
     if np.random.rand() < 0.5:
@@ -68,7 +67,7 @@ def data_gen(images_path, steering_list, batch_size, train_flag):
             if train_flag:
                 img, steering = augment_image(images_path[index], steering_list[index])
             else:
-                img = mpimg.imread(images_path[index])
+                img = cv2.imread(images_path[index])
                 steering = steering_list[index]
 
             img = pre_process(img)
@@ -83,17 +82,18 @@ def check_augmentation(images_path, steerings):
     for i in range(check_augment):
         index = np.random.randint(len(images_path))
 
-        fig = plt.figure(figsize=(8, 6))
-        fig.canvas.set_window_title('Augmentation image')
-        sub = fig.add_subplot(1, 2, 1)
-        sub.set_title(f'Steering before augmentation: {steerings[index]}')
-        plt.imshow(mpimg.imread(images_path[index]))
+        image = cv2.imread(images_path[index])
+        image = pre_process(image)
+        image = cv2.resize(image, (640, 360))
 
         img, st = augment_image(images_path[index], steerings[index])
-        sub = fig.add_subplot(1, 2, 2)
-        sub.set_title(f'Steering after augmentation: {st}')
-        plt.imshow(img)
-        plt.show()
+        img = pre_process(img)
+        img = cv2.resize(img, (640, 360))
+
+        img_concate_hori = np.concatenate((image, img), axis=0)             # Horizontally: axis=1, Vertically: axis=0
+        cv2.imshow(f'Steerings: Before augmentation {steerings[index]}  -  After augmentation {st}', img_concate_hori)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
 # Check Model Predictions with saved images
