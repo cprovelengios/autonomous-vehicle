@@ -29,7 +29,7 @@ def main():
         steering = float(model.predict(img)) * steering_sensitivity
         # print(steering)
 
-        motor.move(speed=max_speed, turn=steering)
+        motor.move(speed=max_speed, turn=steering, no_limit=True)
         cv2.waitKey(1)
     else:
         cv2.destroyAllWindows()
@@ -38,7 +38,7 @@ def main():
 
 if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
-    max_speed = 0.25
+    max_speed = 0.2
     start = False
 
     try:

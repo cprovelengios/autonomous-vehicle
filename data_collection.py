@@ -63,7 +63,7 @@ def main():
         record = 0
         print()
 
-    motor.move(speed=throttle, turn=steering, data_collection=True)
+    motor.move(speed=throttle, turn=steering, no_limit=True)
     cv2.waitKey(1)
 
 
