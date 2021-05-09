@@ -82,7 +82,7 @@ def main():
         if camera_option == 0:
             cam.get_img(True)
         else:
-            img = cam.get_img(False, 240, 120)
+            img = cam.get_img(False, 200, 120)
             img = pre_process(img)
             img = cv2.resize(img, (640, 360))
             cv2.imshow('IMG', img)
