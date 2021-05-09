@@ -34,13 +34,25 @@ def main():
 
     js_values = js.get_js()
     steering = js_values['axis3']
-    throttle = 0
+    throttle = -js_values['axis2']
+
+    if throttle > 0.5:
+        throttle = max_speed
+    elif throttle < -0.5:
+        throttle = -max_speed
+    else:
+        throttle = 0
 
     if js_values['R1']:
-        throttle = max_speed
+        steering = 1
+    elif js_values['R2']:
+        steering = 0.75
     elif js_values['L1']:
-        throttle = -max_speed
-    elif js_values['select'] == 1:
+        steering = -1
+    elif js_values['L2']:
+        steering = -0.75
+
+    if js_values['select'] == 1:
         cv2.destroyAllWindows()
         motor.stop()
 
@@ -55,7 +67,7 @@ def main():
         sleep(0.3)      # sleep until user release the button
 
     if record == 1:
-        img = cam.get_img(False, width=240, height=120)
+        img = cam.get_img(False, width=200, height=120)
         save_data(img, steering)
     elif record == 2:
         save_log()
