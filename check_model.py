@@ -28,7 +28,7 @@ def main():
     img = np.array([img])
 
     steering = float(model.predict(img)) * steering_sensitivity
-    print(steering)
+    print(np.round(steering, 2))
 
     cv2.waitKey(1)
 
