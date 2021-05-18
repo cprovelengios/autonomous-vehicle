@@ -2,58 +2,77 @@
 import time
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-global trigger, echo
 
+# Class for measure distance with sensor SRF05
+# The document I am referring throught the code is https://www.robot-electronics.co.uk/htm/srf05tech.htm
+class SRF05:
+    def __init__(self, trigger_pin, echo_pin):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
-# Pin 20: Ground, Pin 18: Echo with Voltage Divider, Pin 16: Trigger, Pin 2: 5V
-def init():
-    global trigger, echo
+        self.trigger_pin = trigger_pin
+        self.echo_pin = echo_pin
+        self.trigger_time = 0
 
-    trigger = 23
-    echo = 24
+        GPIO.setup(self.trigger_pin, GPIO.OUT)
+        GPIO.setup(self.echo_pin, GPIO.IN)
 
-    GPIO.setup(trigger, GPIO.OUT)
-    GPIO.setup(echo, GPIO.IN)
+    def measure(self):
+        now = self.time_us()
 
+        # The SRF05 can be triggered as fast as every 50ms, or 20 times each second.
+        # You should wait 50ms before the next trigger, even if the SRF05 detects a close object and the echo pulse is shorter.
+        # This is to ensure the ultrasonic "beep" has faded away and will not cause a false echo on the next ranging.
+        pause = 50000 - (now - self.trigger_time)
 
-def get_dis():
-    # Set Trigger to HIGH
-    GPIO.output(trigger, True)
+        if pause > 0:
+            self.sleep_us(pause)
 
-    # Set Trigger after 10us to LOW
-    time.sleep(0.00001)
-    GPIO.output(trigger, False)
+        self.trigger()
+        self.trigger_time = self.time_us()
 
-    start_time = time.time()
-    stop_time = time.time()
+        # The SRF05 will send out an 8 cycle burst of ultrasound at 40khz and raise its echo line high.
+        # Wait no longer than 30ms.
+        if GPIO.wait_for_edge(self.echo_pin, GPIO.RISING, timeout=30) is None:
+            return None
 
-    # Save StartTime
-    while GPIO.input(echo) == 0:
-        start_time = time.time()
+        start = self.time_us()
 
-    # Save time of arrival
-    while GPIO.input(echo) == 1:
-        stop_time = time.time()
+        # Measure pulse duration, again do not wait more than 30ms.
+        # If nothing is detected then the SRF05 will lower its echo line anyway after about 30ms.
+        if GPIO.wait_for_edge(self.echo_pin, GPIO.FALLING, timeout=30) is None:
+            return None
 
-    # Time difference between start and arrival
-    time_elapsed = stop_time - start_time
+        end = self.time_us()
+        width = end - start
 
-    # Multiply with the sonic speed (34300 cm/s) and divide by 2, because there and back
-    distance = (time_elapsed * 34300) / 2
+        # With that logic we should not have real measurement with pulse longer than 30ms anyway
+        if width > 30000:
+            return None
 
-    return distance
+        # If the width of the pulse is measured in us, then dividing by 58 will give you the distance in cm,
+        # or dividing by 148 will give the distance in inches. us/58=cm or us/148=inches.
+        return int(width / 58)
+
+    def trigger(self):
+        # Only need to supply a short 10us pulse to the trigger input to start the ranging.
+        GPIO.output(self.trigger_pin, 1)
+        self.sleep_us(10)
+        GPIO.output(self.trigger_pin, 0)
+
+    # Return time in microseconds
+    def time_us(self):
+        return int(time.time() * 1000000)
+
+    def sleep_us(self, us):
+        time.sleep(us / 1000000.0)
 
 
 if __name__ == '__main__':
-    init()
+    sensor = SRF05(trigger_pin=23, echo_pin=24)
 
     try:
         while True:
-            print(f'Measured Distance = {get_dis():>4.1f} cm')
-            # You should wait 100ms before the next trigger, even if the SRF05 detects a close object and the echo pulse is shorter.
-            # This is to ensure the ultrasonic beep has faded away and will not cause a false echo on the next ranging.
-            time.sleep(0.5)
+            print(f'Measured Distance = {sensor.measure()} cm')
     except KeyboardInterrupt:
         print("Measurement stopped by User")
