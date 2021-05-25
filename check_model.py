@@ -35,13 +35,13 @@ def main():
 
 if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
-    max_speed = 0.5
 
     try:
         model = load_model(f'Models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
+        max_speed = float(sys.argv[3])
     except (IndexError, ValueError):
-        print(f'Give required arguments: Name of model and Steering sensitivity')
+        print(f'Give required arguments: Name of mode, Steering sensitivity and Max speed(0.00 - 1.00)')
         sys.exit()
 
     js.init()

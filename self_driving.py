@@ -40,7 +40,7 @@ def main():
         steering = float(model.predict(img)) * steering_sensitivity
         # print(np.round(steering, 2))
 
-        if distance is not None and distance > 13:
+        if distance is not None and distance > 15:
             motor.move(speed=max_speed, turn=steering, no_limit=True)
         else:
             motor.stop()
@@ -54,21 +54,19 @@ def main():
 if __name__ == '__main__':
     motor = Motor(21, 20, 16, 26, 13, 19)
     sensor = SRF05(trigger_pin=23, echo_pin=24)
-    max_speed = 0.2
     start = False
     distance = 0
 
     try:
         model = load_model(f'Models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
+        max_speed = float(sys.argv[3])
     except (IndexError, ValueError):
-        print(f'Give required arguments: Name of model and Steering sensitivity')
+        print(f'Give required arguments: Name of mode, Steering sensitivity and Max speed(0.00 - 1.00)')
         sys.exit()
 
     js.init()
     print('Ready for Self-Driving')
-
-    # Add Traffic Sign Detection (haarcascade)
 
     while True:
         main()

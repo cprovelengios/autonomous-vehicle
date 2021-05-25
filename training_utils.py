@@ -15,9 +15,9 @@ def augment_image(img_path, steering):
     img = cv2.imread(img_path)
 
     # Translational augmentation moves the image along the x and y direction
-    if np.random.rand() < 0.5:
-        pan = iaa.Affine(translate_percent={"x": (-0.05, 0.05), "y": (-0.05, 0.05)}, cval=155)
-        img = pan.augment_image(img)
+    # if np.random.rand() < 0.5:
+    #     pan = iaa.Affine(translate_percent={"x": (-0.02, 0.02), "y": (-0.02, 0.02)}, cval=155)
+    #     img = pan.augment_image(img)
 
     if np.random.rand() < 0.5:
         zoom = iaa.Affine(scale=(1, 1.2))

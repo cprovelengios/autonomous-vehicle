@@ -2,13 +2,13 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 
 # Pin 39: Ground, Pin 37: Red, Pin 40: Red(Tape), a: right motors, b: left motors
 class Motor:
     def __init__(self, en_a, in_a1, in_a2, en_b, in_b1, in_b2):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+
         self.en_a = en_a
         self.in_a1 = in_a1
         self.in_a2 = in_a2
