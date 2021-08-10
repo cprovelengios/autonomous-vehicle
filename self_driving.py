@@ -16,8 +16,17 @@ def measure():
         distance = sensor.measure()
 
 
+def thread_sleep():
+    global time_passed
+
+    while start:
+        if not time_passed:
+            sleep(1)
+            time_passed = True
+
+
 def main():
-    global start
+    global start, time_passed, count_images
 
     js_values = js.get_js()
 
@@ -29,11 +38,15 @@ def main():
     elif js_values['start'] == 1:
         start = not start
         Thread(target=measure).start()
+
+        if save_images:
+            Thread(target=thread_sleep).start()
+
         print(f'Self driving {"Started" if start else "Stopped"}')
         sleep(0.3)
 
     if start:
-        img = cam.get_img(False, width=200, height=120)
+        img = image = cam.get_img(False, width=200, height=120)
         img = pre_process(img)
         img = np.array([img])
 
@@ -44,6 +57,20 @@ def main():
             motor.move(speed=max_speed, turn=steering, no_limit=True)
         else:
             motor.stop()
+
+        if save_images and time_passed:
+            time_passed = False
+
+            cv2.putText(image, str(np.round(steering, 2)), (0, 17), font, 0.7, (0, 255, 255), 1, cv2.LINE_AA)
+
+            if count_images < 10:
+                cv2.putText(image, str(count_images), (184, 17), font, 0.7, (0, 255, 0), 1, cv2.LINE_AA)
+            else:
+                cv2.putText(image, str(count_images), (170, 17), font, 0.7, (0, 255, 0), 1, cv2.LINE_AA)
+
+            file_name = os.path.join(path, f'Image_{count_images}.jpg')
+            cv2.imwrite(file_name, image)
+            count_images += 1
 
         cv2.waitKey(1)
     else:
@@ -57,12 +84,18 @@ if __name__ == '__main__':
     start = False
     distance = 0
 
+    count_images = 0
+    time_passed = True
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    path = os.path.join(os.getcwd(), 'Test')
+
     try:
         model = load_model(f'Models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
         max_speed = float(sys.argv[3])
+        save_images = True if int(sys.argv[4]) == 1 else False
     except (IndexError, ValueError):
-        print(f'Give required arguments: Name of mode, Steering sensitivity and Max speed(0.00 - 1.00)')
+        print(f'Give required arguments: Name of mode, Steering sensitivity, Max speed(0.00 - 1.00) and Save images option(0 or 1)')
         sys.exit()
 
     js.init()
