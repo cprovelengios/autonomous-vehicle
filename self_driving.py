@@ -1,7 +1,7 @@
 #!/usr/bin/python3.7
 import camera as cam
 import joystick as js
-from time import sleep
+from time import sleep, time
 from motor import Motor
 from data_utils import *
 from distance import SRF05
@@ -26,7 +26,7 @@ def thread_sleep():
 
 
 def main():
-    global start, time_passed, count_images
+    global start, time_passed, count_images, lft
 
     js_values = js.get_js()
 
@@ -58,6 +58,16 @@ def main():
         else:
             motor.stop()
 
+        # if len(tpf) <= 1000:
+        #     tpf.append(time() - lft)
+        #     lft = time()
+        # else:
+        #     tpf.pop(0)
+        #     avg_tpf = sum(tpf) / len(tpf)
+        #     fps = 1 / avg_tpf
+        #     print(fps)
+        #     start = not start
+
         if save_images and time_passed:
             time_passed = False
 
@@ -83,6 +93,9 @@ if __name__ == '__main__':
     sensor = SRF05(trigger_pin=23, echo_pin=24)
     start = False
     distance = 0
+
+    lft = 0             # Last frame time
+    tpf = []            # Time per frame
 
     count_images = 0
     time_passed = True
