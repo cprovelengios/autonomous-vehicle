@@ -33,7 +33,7 @@ class Motor:
 
         # Turn sensitivity depends on speed, from tests that were made the best values are:
         # speed: 25 - sens: 50, speed: 50 - sens: 80, speed: 75 - sens: 110, speed: 100 - sens: 140
-        # From these values the formula that derives is: sens = 1.2 * speed + 20
+        # From these values, the formula that derives is: sens = 1.2 * speed + 20
         if speed == 0:
             turn *= 100
         elif speed > 0:
@@ -50,7 +50,7 @@ class Motor:
         left_speed = 100 if left_speed > 100 else left_speed
         left_speed = -100 if left_speed < -100 else left_speed
 
-        # Minimum speed that car robot can move
+        # Minimum speed that the car robot can move
         if not no_limit:
             min_speed = 25
             right_speed = min_speed if 0.01 < right_speed < min_speed else right_speed

@@ -6,7 +6,7 @@ from tensorflow.keras.layers import *
 from tensorflow.keras.models import load_model
 
 config = tf.compat.v1.ConfigProto()             # Error: Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERRO
-config.gpu_options.allow_growth = True          # The process grow the memory usage as it is needed by the process
+config.gpu_options.allow_growth = True          # The process grows the memory usage as it is needed by the process
 sess = tf.compat.v1.Session(config=config)
 
 
@@ -34,7 +34,7 @@ def augment_image(img_path, steering):
     return img, steering
 
 
-# Create model, by nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
+# Create model, by Nvidia: https://developer.nvidia.com/blog/deep-learning-self-driving-cars/
 def create_model():
     model = tf.keras.models.Sequential()
 
@@ -98,7 +98,7 @@ def check_augmentation(images_path, steerings):
 
 # Check Model Predictions with saved images
 def check_model(images_path, steerings):
-    model = load_model(f'Models/{name_model}.h5')
+    model = load_model(f'../data/models/{name_model}.h5')
     index = 0
     length = len(images_path)
 
@@ -123,7 +123,7 @@ def check_model(images_path, steerings):
 
 
 def main():
-    path = 'Training_Data'
+    path = '../data/training_data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
     images_path, steerings = load_data(data)
 

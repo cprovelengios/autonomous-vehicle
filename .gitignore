@@ -1,7 +1,5 @@
-# My folders
-Models/
-Test/
-Training_Data/
+# Training data
+data/
 
 # Node artifact files
 node_modules/

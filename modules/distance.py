@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 
 
 # Class for measure distance with sensor SRF05
-# The document I am referring throught the code is https://www.robot-electronics.co.uk/htm/srf05tech.htm
+# The document I am referring through the code is https://www.robot-electronics.co.uk/htm/srf05tech.htm
 class SRF05:
     def __init__(self, trigger_pin, echo_pin):
         GPIO.setmode(GPIO.BCM)
@@ -39,14 +39,14 @@ class SRF05:
         start = self.time_us()
 
         # Measure pulse duration, again do not wait more than 30ms.
-        # If nothing is detected then the SRF05 will lower its echo line anyway after about 30ms.
+        # If nothing is detected, then the SRF05 will lower its echo line anyway after about 30ms.
         if GPIO.wait_for_edge(self.echo_pin, GPIO.FALLING, timeout=30) is None:
             return None
 
         end = self.time_us()
         width = end - start
 
-        # With that logic we should not have real measurement with pulse longer than 30ms anyway
+        # With that logic, we should not have a real measurement with a pulse longer than 30ms anyway.
         if width > 30000:
             return None
 

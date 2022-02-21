@@ -1,10 +1,8 @@
 #!/usr/bin/python3.7
-import camera as cam
-import keyboard as kb
-import joystick as js
 from time import sleep
-from motor import Motor
-from data_utils import *
+from modules.motor import Motor
+from training.data_utils import *
+from modules import camera as cam, joystick as js, keyboard as kb
 
 
 def main():

@@ -3,11 +3,10 @@ import os
 import sys
 import cv2
 import pandas as pd
-import camera as cam
-import joystick as js
 from time import sleep
-from motor import Motor
 from datetime import datetime
+from modules.motor import Motor
+from modules import camera as cam, joystick as js
 
 
 # Save data, image and steering value
@@ -91,7 +90,7 @@ if __name__ == '__main__':
     steering_list = []
 
     # Create new folder for current session
-    path = os.path.join(os.getcwd(), 'Training_Data')
+    path = '/'.join(os.getcwd().split('/')[:5]) + '/data/training_data'
 
     while os.path.exists(os.path.join(path, f'IMG{str(count_folder)}')):
         count_folder += 1

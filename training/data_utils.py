@@ -4,8 +4,8 @@ import sys
 import cv2
 import numpy as np
 import pandas as pd
-from datetime import datetime
 import matplotlib.pyplot as plt
+from datetime import datetime
 from sklearn.utils import shuffle
 
 
@@ -16,7 +16,7 @@ def import_data_info(*, path, start_folder, end_folder):
 
     for x in range(start_folder, end_folder + 1):
         data_new = pd.read_csv(os.path.join(path, f'log_{x}.csv'), names=columns)
-        data_new['Image'] = data_new['Image'].str.split('/', 5).str[-1]
+        data_new['Image'] = data_new['Image'].str.split('/', 4).str[-1].str.replace('autonomous-vehicle', '..')
         print(f'Folder {x}: {data_new.shape[0]} Images', end=', ')
         data = data.append(data_new, True)  # True need to continue row index from last append
 
@@ -43,7 +43,7 @@ def visualize_balance_data(data, display=True, balance=0):
         plt.show()
 
     if balance:
-        flag = False    # This flag and following check need because bins have 2 times value 0
+        flag = False    # This flag and following check need because bins have 2 times the value of 0
 
         for j in range(number_of_bins + 1):
             if bins[j] == 0 and not flag:
@@ -174,6 +174,7 @@ def check_images(path, data):
             img = cv2.imread(data.iloc[i][0])
             timestamp = str(datetime.timestamp(datetime.now())).replace('.', '')
             file_name = os.path.join(os.getcwd(), new_path, f'Image_{timestamp}.jpg')
+            file_name = '/'.join(file_name.split('/')[:5] + file_name.split('/')[7:])
             cv2.imwrite(file_name, img)
 
             img_list_new.append(file_name)
@@ -186,7 +187,7 @@ def check_images(path, data):
 
 
 def main():
-    path = 'Training_Data'
+    path = '../data/training_data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
     # Visualize and balance data

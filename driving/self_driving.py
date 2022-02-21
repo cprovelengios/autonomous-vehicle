@@ -1,12 +1,11 @@
 #!/usr/bin/python3.7
-import camera as cam
-import joystick as js
 from time import sleep, time
-from motor import Motor
-from data_utils import *
-from distance import SRF05
 from threading import Thread
+from modules.motor import Motor
+from training.data_utils import *
+from modules.distance import SRF05
 from tensorflow.keras.models import load_model
+from modules import camera as cam, joystick as js
 
 
 def measure():
@@ -58,6 +57,7 @@ def main():
         else:
             motor.stop()
 
+        # Fps measurement
         # if len(tpf) <= 1000:
         #     tpf.append(time() - lft)
         #     lft = time()
@@ -100,10 +100,10 @@ if __name__ == '__main__':
     count_images = 0
     time_passed = True
     font = cv2.FONT_HERSHEY_SIMPLEX
-    path = os.path.join(os.getcwd(), 'Test')
+    path = '/'.join(os.getcwd().split('/')[:5]) + '/data/test'
 
     try:
-        model = load_model(f'Models/{sys.argv[1]}.h5')
+        model = load_model(f'../data/models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
         max_speed = float(sys.argv[3])
         save_images = True if int(sys.argv[4]) == 1 else False

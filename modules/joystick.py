@@ -37,7 +37,7 @@ def get_js(name=''):
                     if event.button == x:
                         buttons[key] = 0
 
-    # Put axiss values at buttons dictionary
+    # Put axis values at buttons dictionary.
     buttons['axis1'], buttons['axis2'], buttons['axis3'], buttons['axis4'] = [axiss[0], axiss[1], axiss[3], axiss[4]]
 
     if name == '':
