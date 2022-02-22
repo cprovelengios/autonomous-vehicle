@@ -31,7 +31,7 @@ def main():
 
     # Training, for better results increase data, balance better, change augmentation method
     history = model.fit(data_gen(x_train, x_test, 100, 1),
-                        steps_per_epoch=10,    # How many times in every epoch will take batch_size random images to train (100)
+                        steps_per_epoch=100,    # How many times in every epoch will take batch_size random images to train (100)
                         epochs=10,              # Set steps_per_epoch value so in 10, 15 epochs have good results           (10)
                         validation_data=data_gen(y_train, y_test, 50, 0),
                         validation_steps=50,
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         except IndexError:
             comment = ''
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Balance(0 or Number), Save model(0 or 1) and Comment if want for name model')
+        print(f'Give required arguments: Start folder-End folder (0-0), Balance (0 or Number), Save model (0 or 1) and Comment if want for name model')
         sys.exit()
 
     main()

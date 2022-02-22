@@ -16,7 +16,7 @@ def import_data_info(*, path, start_folder, end_folder):
 
     for x in range(start_folder, end_folder + 1):
         data_new = pd.read_csv(os.path.join(path, f'log_{x}.csv'), names=columns)
-        data_new['Image'] = data_new['Image'].str.split('/', 4).str[-1].str.replace('autonomous-vehicle', '..')
+        data_new['Image'] = data_new['Image']
         print(f'Folder {x}: {data_new.shape[0]} Images', end=', ')
         data = data.append(data_new, True)  # True need to continue row index from last append
 
@@ -137,7 +137,7 @@ def check_images(path, data):
             cv2.destroyAllWindows()
             break
 
-    # Set removes duplicates
+    # Remove duplicates
     remove_index_list = list(set(remove_index_list))
 
     if len(append_index_list) or len(remove_index_list):
@@ -173,8 +173,7 @@ def check_images(path, data):
         for i in range(len(data)):
             img = cv2.imread(data.iloc[i][0])
             timestamp = str(datetime.timestamp(datetime.now())).replace('.', '')
-            file_name = os.path.join(os.getcwd(), new_path, f'Image_{timestamp}.jpg')
-            file_name = '/'.join(file_name.split('/')[:5] + file_name.split('/')[7:])
+            file_name = os.path.join(new_path, f'Image_{timestamp}.jpg')
             cv2.imwrite(file_name, img)
 
             img_list_new.append(file_name)
@@ -187,6 +186,7 @@ def check_images(path, data):
 
 
 def main():
+    # Import data info
     path = '../data/training_data'
     data = import_data_info(path=path, start_folder=folders[0], end_folder=folders[1])
 
@@ -205,7 +205,7 @@ if __name__ == '__main__':
         balance_data = int(sys.argv[2])
         check_data = True if int(sys.argv[3]) == 1 else False
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Balance(0 or Number) and Check data(0 or 1)')
+        print(f'Give required arguments: Start folder-End folder (0-0), Balance (0 or Number) and Check data (0 or 1)')
         sys.exit()
 
     main()

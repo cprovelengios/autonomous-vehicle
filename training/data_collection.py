@@ -82,7 +82,7 @@ if __name__ == '__main__':
     try:
         max_speed = float(sys.argv[1])
     except (IndexError, ValueError):
-        print(f'Give required arguments: Max speed(0.00 - 1.00)')
+        print(f'Give required arguments: Max speed (0.00 - 1.00)')
         sys.exit()
 
     count_folder = 0
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     steering_list = []
 
     # Create new folder for current session
-    path = '/'.join(os.getcwd().split('/')[:5]) + '/data/training_data'
+    path = '../data/training_data'
 
     while os.path.exists(os.path.join(path, f'IMG{str(count_folder)}')):
         count_folder += 1
@@ -103,6 +103,7 @@ if __name__ == '__main__':
     record = 0
 
     js.init()
+    print('Ready for Data Collection')
 
     while True:
         main()

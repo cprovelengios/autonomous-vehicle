@@ -69,9 +69,9 @@ class SRF05:
 
 
 if __name__ == '__main__':
-    sensor = SRF05(trigger_pin=23, echo_pin=24)
-
     try:
+        sensor = SRF05(trigger_pin=23, echo_pin=24)
+
         while True:
             print(f'Measured Distance = {sensor.measure()} cm')
     except KeyboardInterrupt:

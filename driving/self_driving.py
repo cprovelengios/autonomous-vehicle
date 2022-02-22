@@ -57,16 +57,16 @@ def main():
         else:
             motor.stop()
 
-        # Fps measurement
-        # if len(tpf) <= 1000:
-        #     tpf.append(time() - lft)
-        #     lft = time()
-        # else:
-        #     tpf.pop(0)
-        #     avg_tpf = sum(tpf) / len(tpf)
-        #     fps = 1 / avg_tpf
-        #     print(fps)
-        #     start = not start
+        if measure_fps:
+            if len(tpf) <= 1000:
+                tpf.append(time() - lft)
+                lft = time()
+            else:
+                tpf.pop(0)
+                avg_tpf = sum(tpf) / len(tpf)
+                fps = 1 / avg_tpf
+                print(fps)
+                start = not start
 
         if save_images and time_passed:
             time_passed = False
@@ -89,29 +89,39 @@ def main():
 
 
 if __name__ == '__main__':
-    motor = Motor(21, 20, 16, 26, 13, 19)
-    sensor = SRF05(trigger_pin=23, echo_pin=24)
-    start = False
-    distance = 0
-
-    lft = 0             # Last frame time
-    tpf = []            # Time per frame
-
-    count_images = 0
-    time_passed = True
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    path = '/'.join(os.getcwd().split('/')[:5]) + '/data/test'
-
     try:
         model = load_model(f'../data/models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
         max_speed = float(sys.argv[3])
         save_images = True if int(sys.argv[4]) == 1 else False
+        measure_fps = True if int(sys.argv[5]) == 1 else False
     except (IndexError, ValueError):
-        print(f'Give required arguments: Name of mode, Steering sensitivity, Max speed(0.00 - 1.00) and Save images option(0 or 1)')
+        print(f'Give required arguments: Name of model, Steering sensitivity, Max speed (0.00 - 1.00), Save images option (0 or 1) and Measure fps option (0 or 1)')
         sys.exit()
 
+    motor = Motor(21, 20, 16, 26, 13, 19)
+    sensor = SRF05(trigger_pin=23, echo_pin=24)
+    start = False
+    distance = 0
     js.init()
+
+    if save_images:
+        path = '../data/test'
+        count_folder = 0
+        count_images = 0
+        time_passed = True
+        font = cv2.FONT_HERSHEY_SIMPLEX
+
+        while os.path.exists(os.path.join(path, f'IMG{str(count_folder)}')):
+            count_folder += 1
+
+        path = path + "/IMG" + str(count_folder)
+        os.makedirs(path)
+
+    if measure_fps:
+        lft = 0             # Last frame time
+        tpf = []            # Time per frame
+
     print('Ready for Self-Driving')
 
     while True:

@@ -148,7 +148,7 @@ if __name__ == '__main__':
             name_model = ''
             steering_sensitivity = 0
     except (IndexError, ValueError):
-        print(f'Give required arguments: Start folder-End folder(0-0), Check augment(0 or Number), Name of model and Steering sensitivity if want check model')
+        print(f'Give required arguments: Start folder-End folder (0-0), Check augment (0 or Number), Name of model and Steering sensitivity if want check model')
         sys.exit()
 
     main()

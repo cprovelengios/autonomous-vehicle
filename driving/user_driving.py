@@ -77,7 +77,7 @@ def main():
     motor.move(speed=throttle, turn=steering)
 
     if camera:
-        if camera_option == 0:
+        if camera_mode[camera_option] == 'normal':
             cam.get_img(True)
         else:
             img = cam.get_img(False, 200, 120)
@@ -91,19 +91,11 @@ def main():
 
 
 if __name__ == '__main__':
-    motor = Motor(21, 20, 16, 26, 13, 19)
-    max_speed = [0.25, 0.5, 0.75, 1]
-    speed_option = 0
-
-    get_movement = ['joystick', 'keyboard']
-    joystick_mode = ['buttons', 'analog']
-    joystick_option = 0
-
-    camera_mode = ['normal', 'pre_process']
-    camera_option = 0
-    camera = False
-
     try:
+        get_movement = ['joystick', 'keyboard']
+        joystick_mode = ['buttons', 'analog']
+        joystick_option = 0
+
         movement = get_movement[int(sys.argv[1])]
 
         if movement == 'joystick':
@@ -112,8 +104,19 @@ if __name__ == '__main__':
         else:
             kb.init()
             print(f'\nKeyboard input')
-
-        while True:
-            main()
     except (IndexError, ValueError):
-        print(f'Give required argument: Input mode, 0 for joystick - 1 for keyboard')
+        print(f'Give required argument: Input mode (0 for joystick - 1 for keyboard)')
+        sys.exit()
+
+    motor = Motor(21, 20, 16, 26, 13, 19)
+    max_speed = [0.25, 0.5, 0.75, 1]
+    speed_option = 0
+
+    camera_mode = ['normal', 'pre_process']
+    camera_option = 0
+    camera = False
+
+    print('Ready for User-Driving')
+
+    while True:
+        main()
