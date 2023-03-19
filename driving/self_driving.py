@@ -1,4 +1,5 @@
 #!/usr/bin/python3.7
+from imports import *
 from time import sleep, time
 from threading import Thread
 from modules.motor import Motor

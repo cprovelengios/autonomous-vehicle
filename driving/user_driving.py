@@ -1,4 +1,5 @@
 #!/usr/bin/python3.7
+from imports import *
 from time import sleep
 from modules.motor import Motor
 from training.data_utils import *
