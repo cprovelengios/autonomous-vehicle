@@ -34,12 +34,13 @@ def main():
 
         if js_values['x'] == 1:
             joystick_option = (joystick_option + 1) % 2
-            print(f'Joystick input: {joystick_mode[joystick_option]} mode')
+            print(f'Joystick mode {joystick_mode[joystick_option]}')
             sleep(0.3)
         elif js_values['s'] == 1:
             camera_option = (camera_option + 1) % 2
             sleep(0.3)
         elif js_values['select'] == 1:
+            print('\nExit User-Driving')
             cv2.destroyAllWindows()
             motor.stop()
             sys.exit()
@@ -60,20 +61,25 @@ def main():
         elif kb.get_key('RIGHT'):
             steering = 1
 
-        if kb.get_key('v'):
+        if kb.get_key('d'):
             speed_option = (speed_option + 1) % 4
             print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
             sleep(0.3)
-        elif kb.get_key('x'):
+        elif kb.get_key('a'):
             speed_option = (speed_option - 1) % 4
             print(f'Max speed: {max_speed[speed_option] * 100:>3.0f}%')
             sleep(0.3)
-        elif kb.get_key('f'):
+        elif kb.get_key('w'):
             camera_option = (camera_option + 1) % 2
             sleep(0.3)
-        elif kb.get_key('c'):
+        elif kb.get_key('s'):
             camera = not camera
             sleep(0.3)
+        elif kb.get_key('ESCAPE'):
+            print('\nExit User-Driving')
+            cv2.destroyAllWindows()
+            motor.stop()
+            sys.exit()
 
     motor.move(speed=throttle, turn=steering)
 
@@ -101,12 +107,23 @@ if __name__ == '__main__':
 
         if movement == 'joystick':
             js.init()
-            print(f'\nJoystick input: {joystick_mode[joystick_option]} mode')
+
+            align = 7
+            print(f'\nJoystick mode {joystick_mode[joystick_option]} input:')
+            print(f'{"R1:":<{align}} Throttle\n{"L1:":<{align}} Reverse\n{"R2:":<{align}} Speed++')
+            print(f'{"L2:":<{align}} Speed--\n{"x:":<{align}} Input Mode\n{"START:":<{align}} Camera On/Off')
+            print(f'{"s:":<{align}} Camera Mode\n{"SELECT:":<{align}} Quit\n')
         else:
             kb.init()
-            print(f'\nKeyboard input')
+
+            align = 6
+            print(f'\nKeyboard input:')
+            print(f'{"UP:":<{align}} Throttle\n{"DOWN:":<{align}} Reverse\n{"LEFT:":<{align}} Left')
+            print(f'{"RIGHT:":<{align}} Right\n{"d:":<{align}} Speed++\n{"a:":<{align}} Speed--')
+            print(f'{"s:":<{align}} Camera On/Off\n{"w:":<{align}} Camera Mode\n{"ESC:":<{align}} Quit\n')
     except (IndexError, ValueError):
         print(f'Give required argument: Input mode (0 for joystick - 1 for keyboard)')
+        print('python3.7 user_driving.py 0')
         sys.exit()
 
     motor = Motor(21, 20, 16, 26, 13, 19)
@@ -117,7 +134,7 @@ if __name__ == '__main__':
     camera_option = 0
     camera = False
 
-    print('Ready for User-Driving')
+    print('Ready for User-Driving\n')
 
     while True:
         main()

@@ -31,6 +31,7 @@ def main():
     js_values = js.get_js()
 
     if js_values['select'] == 1:
+        print('\nExit Self-Driving')
         cv2.destroyAllWindows()
         start = False
         motor.stop()
@@ -98,6 +99,7 @@ if __name__ == '__main__':
         measure_fps = True if int(sys.argv[5]) == 1 else False
     except (IndexError, ValueError):
         print(f'Give required arguments: Name of model, Steering sensitivity, Max speed (0.00 - 1.00), Save images option (0 or 1) and Measure fps option (0 or 1)')
+        print('python3.7 self_driving.py model 1 0.25 0 0')
         sys.exit()
 
     motor = Motor(21, 20, 16, 26, 13, 19)
@@ -105,6 +107,10 @@ if __name__ == '__main__':
     start = False
     distance = 0
     js.init()
+
+    align = 7
+    print(f'\nJoystick input:')
+    print(f'{"START:":<{align}} Start/Stop\n{"SELECT:":<{align}} Quit\n')
 
     if save_images:
         path = '../data/test'
@@ -123,7 +129,7 @@ if __name__ == '__main__':
         lft = 0             # Last frame time
         tpf = []            # Time per frame
 
-    print('Ready for Self-Driving')
+    print('Ready for Self-Driving\n')
 
     while True:
         main()
