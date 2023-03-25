@@ -122,7 +122,7 @@ if __name__ == '__main__':
             print(f'{"RIGHT:":<{align}} Right\n{"d:":<{align}} Speed++\n{"a:":<{align}} Speed--')
             print(f'{"s:":<{align}} Camera On/Off\n{"w:":<{align}} Camera Mode\n{"ESC:":<{align}} Quit\n')
     except (IndexError, ValueError):
-        print(f'Give required argument: Input mode (0 for joystick - 1 for keyboard)')
+        print(f'\nGive required argument: Input mode (0 for joystick - 1 for keyboard)')
         print('python3.7 user_driving.py 0')
         sys.exit()
 

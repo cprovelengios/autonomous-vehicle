@@ -6,7 +6,7 @@ from modules.motor import Motor
 from training.data_utils import *
 from modules.distance import SRF05
 from tensorflow.keras.models import load_model
-from modules import camera as cam, joystick as js
+from modules import camera as cam, joystick as js, keyboard as kb
 
 
 def measure():
@@ -28,23 +28,40 @@ def thread_sleep():
 def main():
     global start, time_passed, count_images, lft
 
-    js_values = js.get_js()
+    if movement == 'joystick':
+        js_values = js.get_js()
 
-    if js_values['select'] == 1:
-        print('\nExit Self-Driving')
-        cv2.destroyAllWindows()
-        start = False
-        motor.stop()
-        sys.exit()
-    elif js_values['start'] == 1:
-        start = not start
-        Thread(target=measure).start()
+        if js_values['select'] == 1:
+            print('\nExit Self-Driving')
+            cv2.destroyAllWindows()
+            start = False
+            motor.stop()
+            sys.exit()
+        elif js_values['start'] == 1:
+            start = not start
+            Thread(target=measure).start()
 
-        if save_images:
-            Thread(target=thread_sleep).start()
+            if save_images:
+                Thread(target=thread_sleep).start()
 
-        print(f'Self driving {"Started" if start else "Stopped"}')
-        sleep(0.3)
+            print(f'Self driving {"Started" if start else "Stopped"}')
+            sleep(0.3)
+    else:
+        if kb.get_key('ESCAPE'):
+            print('\nExit Self-Driving')
+            cv2.destroyAllWindows()
+            start = False
+            motor.stop()
+            sys.exit()
+        elif kb.get_key('RETURN'):
+            start = not start
+            Thread(target=measure).start()
+
+            if save_images:
+                Thread(target=thread_sleep).start()
+
+            print(f'Self driving {"Started" if start else "Stopped"}')
+            sleep(0.3)
 
     if start:
         img = image = cam.get_img(False, width=200, height=120)
@@ -92,25 +109,36 @@ def main():
 
 if __name__ == '__main__':
     try:
+        get_movement = ['joystick', 'keyboard']
+
         model = load_model(f'../data/models/{sys.argv[1]}.h5')
         steering_sensitivity = float(sys.argv[2])
         max_speed = float(sys.argv[3])
         save_images = True if int(sys.argv[4]) == 1 else False
         measure_fps = True if int(sys.argv[5]) == 1 else False
+        movement = get_movement[int(sys.argv[6])]
+
+        if movement == 'joystick':
+            js.init()
+
+            align = 7
+            print(f'\nJoystick input:')
+            print(f'{"START:":<{align}} Start/Stop\n{"SELECT:":<{align}} Quit\n')
+        else:
+            kb.init()
+
+            align = 6
+            print(f'\nKeyboard input:')
+            print(f'{"ENTER:":<{align}} Start/Stop\n{"ESC:":<{align}} Quit\n')
     except (IndexError, ValueError):
-        print(f'Give required arguments: Name of model, Steering sensitivity, Max speed (0.00 - 1.00), Save images option (0 or 1) and Measure fps option (0 or 1)')
-        print('python3.7 self_driving.py model 1 0.25 0 0')
+        print(f'\nGive required arguments: Name of model, Steering sensitivity, Max speed (0.00 - 1.00), Save images \noption (0 or 1), Measure fps option (0 or 1) and Input mode (0 for joystick - 1 for keyboard)')
+        print('python3.7 self_driving.py model 1 0.25 0 0 0')
         sys.exit()
 
     motor = Motor(21, 20, 16, 26, 13, 19)
     sensor = SRF05(trigger_pin=23, echo_pin=24)
     start = False
     distance = 0
-    js.init()
-
-    align = 7
-    print(f'\nJoystick input:')
-    print(f'{"START:":<{align}} Start/Stop\n{"SELECT:":<{align}} Quit\n')
 
     if save_images:
         path = '../data/test'
